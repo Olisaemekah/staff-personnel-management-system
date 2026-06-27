@@ -16,12 +16,28 @@ This repository adds a Supabase-backed API layer for the existing SPMS frontend.
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY` or `SUPABASE_ANON_KEY`
 
+   Use the values from your Supabase dashboard:
+   - `SUPABASE_URL` from Project Settings → API.
+   - `SUPABASE_SERVICE_ROLE_KEY` from Project Settings → API (recommended for server-side use).
+   - `SUPABASE_ANON_KEY` only if you prefer client-side access.
+
 3. Create the required Supabase table using `supabase-schema.sql`.
+
+4. If you want to run locally, copy `.env.example` to `.env` and set your values.
 
 ## Deployment
 
 - Local development: `npm install` then `npm run dev`
 - Deploy to Vercel: `npx vercel deploy`
+
+### Vercel environment variables
+
+If a Vercel serverless function crashes on startup, it is usually due to missing or incorrect Supabase environment variable configuration. Make sure the project settings include:
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY` or `SUPABASE_ANON_KEY`
+
+Add them in the Vercel dashboard under Project Settings → Environment Variables.
 
 ## GitHub
 
