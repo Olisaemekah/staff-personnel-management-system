@@ -1,0 +1,16 @@
+{
+  "name": "spms-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npx vercel dev",
+    "start": "npx vercel dev",
+    "build": "echo \"No build required for serverless API functions\""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^28.0.0"
+  }
+}

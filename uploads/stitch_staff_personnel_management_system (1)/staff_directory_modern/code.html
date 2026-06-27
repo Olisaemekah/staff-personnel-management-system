@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SPMS | Staff Directory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "status-alert": "#991B1B",
+                    "secondary-container": "#d5e3fd",
+                    "secondary": "#515f74",
+                    "surface-variant": "#e0e3e5",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-low": "#f2f4f6",
+                    "on-secondary-fixed-variant": "#3a485c",
+                    "slate-muted": "#64748B",
+                    "tertiary-container": "#001d31",
+                    "on-secondary-container": "#57657b",
+                    "on-primary-container": "#7c839b",
+                    "tertiary-fixed": "#cce5ff",
+                    "primary": "#000000",
+                    "on-tertiary-fixed": "#001d31",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-fixed": "#d5e3fd",
+                    "inverse-on-surface": "#eff1f3",
+                    "border-subtle": "#E2E8F0",
+                    "primary-fixed": "#dae2fd",
+                    "surface-container": "#eceef0",
+                    "on-tertiary-fixed-variant": "#004b73",
+                    "tertiary": "#000000",
+                    "surface": "#f7f9fb",
+                    "background": "#f7f9fb",
+                    "surface-tint": "#565e74",
+                    "surface-container-high": "#e6e8ea",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#0d1c2f",
+                    "on-surface-variant": "#45464d",
+                    "inverse-surface": "#2d3133",
+                    "primary-fixed-dim": "#bec6e0",
+                    "tertiary-fixed-dim": "#93ccff",
+                    "error-container": "#ffdad6",
+                    "official-navy": "#0F172A",
+                    "status-active": "#166534",
+                    "on-tertiary-container": "#188ace",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#b9c7e0",
+                    "outline-variant": "#c6c6cd",
+                    "on-surface": "#191c1e",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#e0e3e5",
+                    "outline": "#76777d",
+                    "on-background": "#191c1e",
+                    "inverse-primary": "#bec6e0",
+                    "primary-container": "#131b2e",
+                    "kinetic-blue": "#2563EB"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "max-width-content": "1280px",
+                    "gutter": "24px",
+                    "base": "4px",
+                    "margin-page": "32px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "data-mono": ["JetBrains Mono"],
+                    "headline-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "data-mono": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-sm": ["18px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-sm": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-bold": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .table-row-hover:hover {
+            background-color: rgba(37, 99, 235, 0.03);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-white h-16 border-b border-border-subtle">
+<div class="flex justify-between items-center w-full px-margin-page max-w-max-width-content mx-auto h-full">
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-kinetic-blue rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl">bolt</span>
+</div>
+<span class="font-headline-md text-xl font-bold text-official-navy tracking-tight">SPMS</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-body-md font-semibold text-kinetic-blue border-b-2 border-kinetic-blue h-16 flex items-center" href="#">Directory</a>
+<a class="font-body-md font-medium text-slate-muted hover:text-kinetic-blue transition-colors h-16 flex items-center" href="#">Dashboard</a>
+<a class="font-body-md font-medium text-slate-muted hover:text-kinetic-blue transition-colors h-16 flex items-center" href="#">Admin</a>
+</nav>
+</div>
+<div class="flex items-center gap-5">
+<button class="bg-kinetic-blue text-white px-4 py-2 rounded-lg font-label-bold text-label-bold hover:bg-blue-700 transition-all shadow-sm active:scale-95">
+                Add Staff
+            </button>
+<div class="flex items-center gap-1">
+<button class="p-2 text-slate-muted hover:bg-surface-container rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="p-2 text-slate-muted hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-border-subtle cursor-pointer hover:ring-2 hover:ring-kinetic-blue/20 transition-all">
+<img class="w-full h-full object-cover" data-alt="Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZJ0-ABEnbYYlq6TOH9MuUargrG0gY4ijYXADR-8W_eSP7HpTyLL8gI93Ef80DUnvxg3f85y6FF2VsKxtFjngYXdwXJ0KFc_RhA3bV854rk-iD4vU57TG7lk_a3Qdiy7MwmdSl1aMgRMbI_0GWm5psNR0OP7MAk21CbAO_lu1cUS8oCJnAwD2n5mqGu59iYewOWVHvbaeJFjEkAuiWFPe70_dhppbRRduwYgr7UGpf-8j_eBqri5fsCv9MdlTi7_dWjEW-ybf0GAM"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 pt-20 w-64 bg-white border-r border-border-subtle z-40">
+<div class="px-6 py-6 border-b border-surface-container-low mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container flex items-center justify-center rounded-xl text-kinetic-blue">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+</div>
+<div>
+<h2 class="font-body-md font-bold text-official-navy leading-tight">Registry Division</h2>
+<p class="text-xs text-slate-muted font-medium">Personnel Admin</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-kinetic-blue/5 text-kinetic-blue rounded-lg font-semibold transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">person_search</span>
+<span class="font-body-md">Personnel Search</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-muted hover:bg-surface-container rounded-lg transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">monitoring</span>
+<span class="font-body-md">Statistics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-muted hover:bg-surface-container rounded-lg transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">history</span>
+<span class="font-body-md">Service Records</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-muted hover:bg-surface-container rounded-lg transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">military_tech</span>
+<span class="font-body-md">Promotion Board</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-muted hover:bg-surface-container rounded-lg transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">security</span>
+<span class="font-body-md">System Audit</span>
+</a>
+</nav>
+<div class="mt-auto px-4 py-6 border-t border-surface-container-low space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-slate-muted hover:bg-surface-container rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-error hover:bg-red-50 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-md">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-16 flex-1 flex flex-col bg-surface-bright">
+<div class="w-full max-w-max-width-content mx-auto px-margin-page py-10">
+<!-- Directory Header -->
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="font-headline-lg text-3xl text-official-navy mb-2">Staff Directory</h1>
+<p class="font-body-lg text-slate-muted">Manage and monitor administrative records for all active personnel.</p>
+</div>
+<div class="flex items-center gap-6 bg-white p-3 rounded-xl border border-border-subtle shadow-sm">
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-muted uppercase tracking-widest mb-1">Active</span>
+<span class="font-headline-sm text-status-active">1,248</span>
+</div>
+<div class="w-px h-8 bg-border-subtle"></div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-muted uppercase tracking-widest mb-1">Leave</span>
+<span class="font-headline-sm text-secondary">42</span>
+</div>
+<div class="w-px h-8 bg-border-subtle"></div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-muted uppercase tracking-widest mb-1">Suspended</span>
+<span class="font-headline-sm text-error">12</span>
+</div>
+</div>
+</div>
+<!-- Filter & Search Grid -->
+<div class="bg-white rounded-2xl border border-border-subtle shadow-sm mb-8 overflow-hidden">
+<div class="p-6 border-b border-border-subtle bg-surface-container-lowest/50">
+<div class="flex flex-col md:flex-row gap-4 items-center">
+<div class="relative flex-1 group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-muted group-focus-within:text-kinetic-blue transition-colors">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border-transparent rounded-xl font-body-md text-official-navy placeholder:text-slate-muted focus:ring-2 focus:ring-kinetic-blue/20 focus:border-kinetic-blue focus:bg-white transition-all" placeholder="Search by name, service number, or unit..." type="text"/>
+</div>
+<button class="w-full md:w-auto bg-kinetic-blue text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-md shadow-kinetic-blue/20">Search</button>
+</div>
+</div>
+<div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="space-y-2">
+<label class="text-[11px] font-bold text-slate-muted uppercase tracking-widest px-1">Rank Level</label>
+<select class="w-full bg-white border border-border-subtle rounded-xl px-4 py-2.5 font-body-md text-official-navy focus:ring-2 focus:ring-kinetic-blue/20 focus:border-kinetic-blue">
+<option>All Ranks</option>
+<option>General Staff</option>
+<option>Senior Officer</option>
+<option>Junior Officer</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-[11px] font-bold text-slate-muted uppercase tracking-widest px-1">Year Joined</label>
+<select class="w-full bg-white border border-border-subtle rounded-xl px-4 py-2.5 font-body-md text-official-navy focus:ring-2 focus:ring-kinetic-blue/20 focus:border-kinetic-blue">
+<option>All Years</option>
+<option>2024</option>
+<option>2023</option>
+<option>2022</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-[11px] font-bold text-slate-muted uppercase tracking-widest px-1">Specialization</label>
+<select class="w-full bg-white border border-border-subtle rounded-xl px-4 py-2.5 font-body-md text-official-navy focus:ring-2 focus:ring-kinetic-blue/20 focus:border-kinetic-blue">
+<option>Any Course</option>
+<option>Tactical Leadership</option>
+<option>Intelligence Analysis</option>
+<option>Logistics Mgmt</option>
+</select>
+</div>
+<div class="flex items-end">
+<button class="w-full py-2.5 border border-border-subtle text-slate-muted font-semibold rounded-xl hover:bg-surface-container transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">filter_alt_off</span>
+                        Reset Filters
+                    </button>
+</div>
+</div>
+</div>
+<!-- Data Table Card -->
+<div class="bg-white rounded-2xl border border-border-subtle shadow-sm overflow-hidden">
+<div class="px-8 py-6 flex justify-between items-center border-b border-border-subtle">
+<div class="flex items-center gap-3">
+<h3 class="font-headline-sm text-official-navy">Personnel Registry</h3>
+<span class="bg-surface-container px-2 py-0.5 rounded text-xs font-bold text-slate-muted">PAGE 1/250</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-muted hover:text-kinetic-blue flex items-center gap-1.5 font-label-bold text-[13px] transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span> Export
+                    </button>
+<div class="w-px h-4 bg-border-subtle"></div>
+<button class="text-slate-muted hover:text-kinetic-blue flex items-center gap-1.5 font-label-bold text-[13px] transition-colors">
+<span class="material-symbols-outlined text-[18px]">print</span> Print
+                    </button>
+</div>
+</div>
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest text-slate-muted text-left">
+<th class="px-8 py-4 font-bold text-[11px] uppercase tracking-widest border-b border-border-subtle">Full Name</th>
+<th class="px-8 py-4 font-bold text-[11px] uppercase tracking-widest border-b border-border-subtle">Service No</th>
+<th class="px-8 py-4 font-bold text-[11px] uppercase tracking-widest border-b border-border-subtle">Rank</th>
+<th class="px-8 py-4 font-bold text-[11px] uppercase tracking-widest border-b border-border-subtle">Current Unit</th>
+<th class="px-8 py-4 font-bold text-[11px] uppercase tracking-widest border-b border-border-subtle">Status</th>
+<th class="px-8 py-4 font-bold text-[11px] uppercase tracking-widest border-b border-border-subtle text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-official-navy divide-y divide-border-subtle">
+<!-- Row 1 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-11 h-11 rounded-lg overflow-hidden border border-border-subtle ring-4 ring-surface-bright shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEywTGsTKQ6ikort8xK3TdHQuLXsGlk5Fnc9faU2fPhpklUsqybhB5GjpL88YRAoPq9kvF9jxO_uieVFC52DFP7yyE4mRvG2ztJ775MQ9YYiZ0p5X6nVuUmChLkWtYYvo0a_b9-fJlJ2rfZqxCfjLYWyWWy1LixHmJv_ISKALMW-Par-iP5q0ZmOtYOKO2W1ZoqnVFk0kZL843dsGOkCNnoLBaid8iHBFWcicK1IKo2_eupNU8Kd2Sjf4IRl7Zx2mASXPMlNS57ys"/>
+</div>
+<div>
+<span class="font-bold text-official-navy block">Col. Jonathan Miller</span>
+<span class="text-xs text-slate-muted font-medium">Joined Jan 2012</span>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 font-data-mono text-xs text-slate-muted tracking-tight">SPMS-7721-XA</td>
+<td class="px-8 py-5 font-medium">Colonel</td>
+<td class="px-8 py-5 text-slate-muted">Strategic Ops Command</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-status-active text-[11px] font-bold uppercase rounded-full border border-green-100">
+<span class="w-1.5 h-1.5 rounded-full bg-status-active"></span> Active Duty
+                                </span>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-2 text-slate-muted hover:text-kinetic-blue hover:bg-kinetic-blue/5 rounded-lg transition-all" title="View Profile">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-2 text-slate-muted hover:text-kinetic-blue hover:bg-kinetic-blue/5 rounded-lg transition-all" title="Edit Entry">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-11 h-11 rounded-lg overflow-hidden border border-border-subtle ring-4 ring-surface-bright shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_RLdV4FJ4CzZJyDYJMSGqFsOWLdSZ_e-HybVURu3tO3EenUUyuVwsNKoTAxUffyuLJu6NNxyPwgdN-PFuPyAHlHgu8316_T9IAFgNj-3w9c8ctjY2Db0fpvlKUnGqNykYm-3KsXt6a7dxn5Nt1n-n50H0h8tI7is4sR5nSvMXuD3CFkWF-71ue4tLMAWLn89EwNrQ_Ped9BkMpK2YDNR1l9ROP9ceRG1iA2xQhFJWQgYhT-HCRDa0317eDspXkrFmM_YHyBT05-0"/>
+</div>
+<div>
+<span class="font-bold text-official-navy block">Maj. Sarah Jenkins</span>
+<span class="text-xs text-slate-muted font-medium">Joined Mar 2015</span>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 font-data-mono text-xs text-slate-muted tracking-tight">SPMS-4482-BC</td>
+<td class="px-8 py-5 font-medium">Major</td>
+<td class="px-8 py-5 text-slate-muted">Intelligence Wing</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-status-active text-[11px] font-bold uppercase rounded-full border border-green-100">
+<span class="w-1.5 h-1.5 rounded-full bg-status-active"></span> Active Duty
+                                </span>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-2 text-slate-muted hover:text-kinetic-blue hover:bg-kinetic-blue/5 rounded-lg transition-all" title="View Profile">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-2 text-slate-muted hover:text-kinetic-blue hover:bg-kinetic-blue/5 rounded-lg transition-all" title="Edit Entry">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-11 h-11 rounded-lg overflow-hidden border border-border-subtle ring-4 ring-surface-bright shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJjG7tiwkR5VhVPsVv1XJyCSsUbYVEYONTGsHAacrPDZhM9EooSD49YnmtGxgI9_jgNuSWHjPiS1NaoAbwEIe5Td1DpNVUd_J4egcHi7GlAw6MkuYMdX9Ig-B1tJ_BDhU51oh-PDX45AqZOF5avYb74JqRaLqkz6vyo4V16I-0ptp4PsVdWufTuKRloL6Jp3E7exXT5ooILtWB1_by1mVpwNX7OiwIVYSi6ESO9B-2Yi_1jJ0srxwVYILhW_zXs1_bVLS7ruJPB80"/>
+</div>
+<div>
+<span class="font-bold text-official-navy block">Lt. Robert Chen</span>
+<span class="text-xs text-slate-muted font-medium">Joined Jun 2021</span>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 font-data-mono text-xs text-slate-muted tracking-tight">SPMS-1109-FF</td>
+<td class="px-8 py-5 font-medium">Lieutenant</td>
+<td class="px-8 py-5 text-slate-muted">Logistics Bureau</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 text-[11px] font-bold uppercase rounded-full border border-amber-100">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Special Leave
+                                </span>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-2 text-slate-muted hover:text-kinetic-blue hover:bg-kinetic-blue/5 rounded-lg transition-all" title="View Profile">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-2 text-slate-muted hover:text-kinetic-blue hover:bg-kinetic-blue/5 rounded-lg transition-all" title="Edit Entry">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-11 h-11 rounded-lg overflow-hidden border border-border-subtle ring-4 ring-surface-bright shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7duGIIbsVpX9JOdctFF_xZcM_cIr1T0IxX06k34k4hCkqOFABPhQLozfiYTKjOUPmm07AjKunVaTBttbJ47BYG38jT45Lkk9H1uYNpvrQDgew71UYN7rfAfXGojN_JD05EIP2K8MQbfRhRgfgM8XolKdxTeUhd3h51eLodg22bYqpzSDph090amJfy3oGvUFUa-NJAAhbO6WTganj9fRIwdaxl6qAI5wq5_r85au2t8QEULvZ_V-nX5qH6m4ghXlqDvN9CF2qbYc"/>
+</div>
+<div>
+<span class="font-bold text-official-navy block">Gen. Arthur Vance</span>
+<span class="text-xs text-slate-muted font-medium">Joined Sep 1998</span>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 font-data-mono text-xs text-slate-muted tracking-tight">SPMS-0001-HQ</td>
+<td class="px-8 py-5 font-medium">General</td>
+<td class="px-8 py-5 text-slate-muted">Registry Division</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-status-active text-[11px] font-bold uppercase rounded-full border border-green-100">
+<span class="w-1.5 h-1.5 rounded-full bg-status-active"></span> Active Duty
+                                </span>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-2 text-slate-muted hover:text-kinetic-blue hover:bg-kinetic-blue/5 rounded-lg transition-all" title="View Profile">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-2 text-slate-muted hover:text-kinetic-blue hover:bg-kinetic-blue/5 rounded-lg transition-all" title="Edit Entry">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-11 h-11 rounded-lg overflow-hidden border border-border-subtle ring-4 ring-surface-bright shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQCq1zsGYQIXPzC8Oo2QHg8wp4fIrjrnVNS4vk4veXJryBw4aK-NgUqWnf-8V1TYuJvWWNesOvPR60gEySwEFD7SuVd0XDO0jVq0MbuCfccwl_3XYNolNYwHWj1--yBZHFvE52AGi_yVf9-VoUDVALOONYBdl9DyYMwwOGd6-3wnGzh7leLmo2jN3D0fhxoupntUzsVdaoplZQf_-u8S_P_4BjSO9sIo9UgcW4t48LkOFRxjWFmV7wb93-MtcKz767zvGpVmag78c"/>
+</div>
+<div>
+<span class="font-bold text-official-navy block">Capt. Elena Rodriguez</span>
+<span class="text-xs text-slate-muted font-medium">Joined Nov 2018</span>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 font-data-mono text-xs text-slate-muted tracking-tight">SPMS-3390-PL</td>
+<td class="px-8 py-5 font-medium">Captain</td>
+<td class="px-8 py-5 text-slate-muted">Medical Services</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-error text-[11px] font-bold uppercase rounded-full border border-red-100">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Suspended
+                                </span>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-1">
+<button class="p-2 text-slate-muted hover:text-kinetic-blue hover:bg-kinetic-blue/5 rounded-lg transition-all" title="View Profile">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-2 text-slate-muted hover:text-kinetic-blue hover:bg-kinetic-blue/5 rounded-lg transition-all" title="Edit Entry">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-8 py-6 bg-surface-container-lowest flex items-center justify-between border-t border-border-subtle">
+<span class="font-body-sm text-slate-muted">Showing <span class="font-bold text-official-navy">1-5</span> of 1,248 entries</span>
+<div class="flex items-center gap-1">
+<button class="w-9 h-9 flex items-center justify-center rounded-lg border border-border-subtle text-slate-muted hover:bg-surface-container transition-all disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="w-9 h-9 flex items-center justify-center rounded-lg bg-kinetic-blue text-white font-bold text-sm shadow-sm shadow-kinetic-blue/20">1</button>
+<button class="w-9 h-9 flex items-center justify-center rounded-lg border border-border-subtle text-official-navy font-bold text-sm hover:bg-surface-container transition-all">2</button>
+<button class="w-9 h-9 flex items-center justify-center rounded-lg border border-border-subtle text-official-navy font-bold text-sm hover:bg-surface-container transition-all">3</button>
+<span class="px-2 text-slate-muted font-bold">...</span>
+<button class="w-9 h-9 flex items-center justify-center rounded-lg border border-border-subtle text-official-navy font-bold text-sm hover:bg-surface-container transition-all">250</button>
+<button class="w-9 h-9 flex items-center justify-center rounded-lg border border-border-subtle text-slate-muted hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="lg:ml-64 bg-white border-t border-border-subtle">
+<div class="w-full py-8 px-margin-page flex flex-col md:flex-row justify-between items-center max-w-max-width-content mx-auto">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1 text-kinetic-blue font-bold tracking-tight">
+<span class="material-symbols-outlined text-sm">bolt</span> SPMS
+            </div>
+<p class="text-xs text-slate-muted">© 2024 Staff Personnel Management System | Institutional Registry Division</p>
+</div>
+<div class="flex flex-wrap gap-6 mt-6 md:mt-0">
+<a class="text-xs font-semibold text-slate-muted hover:text-kinetic-blue transition-colors" href="#">Privacy Policy</a>
+<a class="text-xs font-semibold text-slate-muted hover:text-kinetic-blue transition-colors" href="#">Terms of Service</a>
+<a class="text-xs font-semibold text-slate-muted hover:text-kinetic-blue transition-colors" href="#">Security Protocol</a>
+<a class="text-xs font-semibold text-slate-muted hover:text-kinetic-blue transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+<script>
+    // Search focus interaction
+    const searchInput = document.querySelector('input[type="text"]');
+    searchInput.addEventListener('focus', () => {
+        searchInput.parentElement.querySelector('span').classList.add('text-kinetic-blue');
+    });
+    searchInput.addEventListener('blur', () => {
+        searchInput.parentElement.querySelector('span').classList.remove('text-kinetic-blue');
+    });
+</script>
+</body></html>

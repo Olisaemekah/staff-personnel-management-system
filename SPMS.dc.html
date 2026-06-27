@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { font-family: 'Inter', sans-serif; background: #f7f9fb; color: #191c1e; }
+    input, select, textarea, button { font-family: inherit; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideIn { from { opacity:0; transform:translateX(-16px); } to { opacity:1; transform:translateX(0); } }
+    .sidebar-transition { transition: width 0.22s cubic-bezier(.4,0,.2,1); }
+    .sidebar-label { transition: opacity 0.15s ease, width 0.22s ease; }
+    @media (max-width: 900px) {
+      .hide-mobile { display: none !important; }
+    }
+    @media print {
+      #spms-sidebar, #spms-topbar, .no-print { display: none !important; }
+      body { background: white; }
+    }
+  </style>
+</helmet>
+
+<div style="min-height:100vh; font-family:'Inter',sans-serif;">
+
+  <!-- TOAST -->
+  <sc-if value="{{ showNotification }}">
+    <div style="position:fixed; top:20px; right:20px; z-index:9999; background:{{ notificationBg }}; color:white; padding:13px 20px; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.18); font-size:13.5px; font-weight:500; animation:fadeIn 0.3s ease; max-width:360px; display:flex; align-items:center; gap:10px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      {{ notificationMsg }}
+    </div>
+  </sc-if>
+
+  <!-- ══ LOGIN ══ -->
+  <sc-if value="{{ isLoginPage }}">
+    <div style="min-height:100vh; background:#0d1b2e; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; animation:slideUp 0.4s ease;">
+      <div style="margin-bottom:28px; text-align:center;">
+        <img src="uploads/Navy-logo.png" style="width:62px; height:auto; object-fit:contain; margin:0 auto 12px; display:block; filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4));" alt="Nigerian Navy Crest" />
+        <div style="font-size:18px; font-weight:700; color:white; letter-spacing:0.5px;">NNPMS</div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.45); margin-top:4px; max-width:260px; margin-left:auto; margin-right:auto; line-height:1.5;">Nigerian Navy Personnel Management System</div>
+      </div>
+      <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:36px 40px; width:100%; max-width:400px; box-shadow:0 4px 24px rgba(0,0,0,0.07);">
+        <div style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:4px;">Sign In</div>
+        <div style="font-size:13px; color:#64748b; margin-bottom:24px;">Authorised personnel only</div>
+        <sc-if value="{{ loginError }}">
+          <div style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:10px 14px; border-radius:6px; font-size:13px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            {{ loginError }}
+          </div>
+        </sc-if>
+        <form onSubmit="{{ handleLogin }}" style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Username</label>
+            <input name="username" type="text" placeholder="Enter username" autocomplete="username" style="width:100%; padding:10px 13px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; outline:none; background:#fafafa;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Password</label>
+            <input name="password" type="password" placeholder="••••••••" autocomplete="current-password" style="width:100%; padding:10px 13px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; outline:none; background:#fafafa;" />
+          </div>
+          <button type="submit" style="background:#1e3a8a; color:white; border:none; padding:12px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; margin-top:4px;" style-hover="background:#162f72;">Sign In</button>
+        </form>
+        <div style="margin-top:18px; padding:12px 14px; background:#f8fafc; border-radius:8px; border:1px solid #f1f5f9; font-size:12px;">
+          <div style="font-weight:600; color:#475569; margin-bottom:5px; text-transform:uppercase; letter-spacing:0.5px; font-size:10px;">Demo Credentials</div>
+          <div style="color:#64748b; display:flex; flex-direction:column; gap:2px;">
+            <span>Admin: <b style="color:#1e3a8a;">admin</b> / <b style="color:#1e3a8a;">admin123</b></span>
+            <span>Viewer: <b style="color:#1e3a8a;">viewer</b> / <b style="color:#1e3a8a;">viewer123</b></span>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:14px;">
+          <button onClick="{{ goToPublicFromLogin }}" style="background:none; border:none; color:#94a3b8; font-size:12px; cursor:pointer;" style-hover="color:#1e3a8a;">Public Search Portal →</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══ PUBLIC PORTAL ══ -->
+  <sc-if value="{{ isPublicPortal }}">
+    <div style="min-height:100vh; background:#f1f5f9;">
+      <!-- SLIM BRANDING STRIP — no nav/menu -->
+      <div style="background:#0d1b2e; padding:8px 24px; display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <img src="uploads/Navy-logo.png" style="width:38px; height:auto; object-fit:contain; flex-shrink:0;" alt="Nigerian Navy" />
+          <div>
+            <div style="font-size:13px; font-weight:700; color:white; letter-spacing:0.5px;">NNPMS</div>
+            <div style="font-size:9px; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px;">Nigerian Navy Personnel Registry</div>
+          </div>
+        </div>
+        <button onClick="{{ navBackFromPublic }}" style="background:none; border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.6); padding:5px 14px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:500;" style-hover="border-color:rgba(255,255,255,0.5); color:white;">Admin Login</button>
+      </div>
+
+      <!-- Hero -->
+      <div style="background:#0d1b2e; padding:56px 24px 44px; text-align:center;">
+        <div style="display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); padding:6px 16px; border-radius:20px; font-size:10px; font-weight:700; color:rgba(255,255,255,0.5); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:24px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Secure Personnel Registry
+        </div>
+        <div style="font-size:38px; font-weight:700; color:white; line-height:1.2; letter-spacing:-0.02em; margin-bottom:6px;">Personnel Search</div>
+        <div style="font-size:38px; font-weight:700; color:rgba(255,255,255,0.35); line-height:1.2; letter-spacing:-0.02em; margin-bottom:18px;">&amp; Directory Services</div>
+        <div style="font-size:14px; color:rgba(255,255,255,0.4); max-width:500px; margin:0 auto 32px; line-height:1.7;">Search by name, service number, rank or batch to access authorised personnel records.</div>
+
+        <!-- Search bar -->
+        <div style="display:flex; gap:0; border-radius:10px; overflow:hidden; background:white; box-shadow:0 8px 32px rgba(0,0,0,0.3); max-width:620px; margin:0 auto;">
+          <div style="display:flex; align-items:center; padding:0 16px; color:#94a3b8; flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </div>
+          <input value="{{ publicSearchQuery }}" onInput="{{ handlePublicSearch }}" type="text" placeholder="Name, service number, rank, or batch..." style="flex:1; padding:15px 0; border:none; font-size:15px; color:#0f172a; outline:none; background:transparent;" />
+          <button style="background:#1e3a8a; color:white; border:none; padding:0 26px; font-size:12px; font-weight:700; cursor:pointer; letter-spacing:1px;" style-hover="background:#162f72;">SEARCH</button>
+        </div>
+      </div>
+
+      <!-- Results / Profile area -->
+      <div style="max-width:820px; margin:0 auto; padding:32px 24px 56px;">
+
+        <!-- Search results list -->
+        <sc-if value="{{ showPublicResultsList }}">
+          <div style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">{{ publicResultsCount }} record(s) found</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <sc-for list="{{ publicFilteredStaff }}" as="staff" hint-placeholder-count="4">
+              <div onClick="{{ staff.onSelect }}" style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:14px 18px; display:flex; align-items:center; gap:16px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.04);" style-hover="border-color:#1e3a8a; box-shadow:0 4px 16px rgba(30,58,138,0.1);">
+                <!-- Photo or initials -->
+                <div style="width:52px; height:62px; border-radius:6px; overflow:hidden; flex-shrink:0; background:{{ staff.avatarColor }}; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; color:white; border:1px solid #e2e8f0; position:relative;">
+                  {{ staff.photoEl }}
+                  <sc-if value="{{ staff.noPhoto }}" hint-placeholder-val="{{ true }}">
+                    <span style="position:relative; z-index:1;">{{ staff.initials }}</span>
+                  </sc-if>
+                </div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:15px; font-weight:700; color:#0f172a;">{{ staff.name }}</div>
+                  <div style="font-size:13px; color:#475569; margin-top:2px;">{{ staff.rank }}</div>
+                  <div style="font-size:11px; color:#94a3b8; margin-top:3px; font-family:'JetBrains Mono',monospace;">{{ staff.serviceNumber }}</div>
+                </div>
+                <div style="text-align:right; flex-shrink:0;">
+                  <div style="display:inline-block; background:#eef2fa; color:#1e3a8a; font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; letter-spacing:0.3px; margin-bottom:5px;">{{ staff.batch }}</div>
+                  <div style="font-size:12px; color:#64748b; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ staff.currentUnit }}</div>
+                </div>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" style="flex-shrink:0;"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- No results -->
+        <sc-if value="{{ publicNoResults }}">
+          <div style="text-align:center; padding:56px 24px; background:white; border-radius:12px; border:1px solid #e2e8f0;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" style="margin-bottom:14px;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <div style="font-size:15px; font-weight:600; color:#374151;">No records found</div>
+            <div style="font-size:13px; margin-top:4px; color:#94a3b8;">Try a different name, rank, service number or batch</div>
+          </div>
+        </sc-if>
+
+        <!-- Profile view -->
+        <sc-if value="{{ hasPublicProfile }}">
+          <button onClick="{{ clearPublicProfile }}" style="background:none; border:none; color:#1e3a8a; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:6px; margin-bottom:18px; font-weight:600;" style-hover="color:#162f72;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            Back to results
+          </button>
+
+          <!-- Profile card -->
+          <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+
+            <!-- Dark header with photo -->
+            <div style="background:#0d1b2e; padding:28px 32px; display:flex; align-items:flex-end; gap:22px; position:relative;">
+              <!-- Passport photo -->
+              <div style="width:90px; height:110px; border-radius:6px; overflow:hidden; flex-shrink:0; border:2px solid rgba(255,255,255,0.2); background:{{ publicProfileColor }}; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:white; position:relative;">
+                {{ publicProfilePhotoEl }}
+                <sc-if value="{{ noPublicPhoto }}" hint-placeholder-val="{{ true }}">
+                  <span style="position:relative; z-index:1;">{{ publicProfileInitials }}</span>
+                </sc-if>
+              </div>
+              <!-- Name & details -->
+              <div style="padding-bottom:4px; flex:1; min-width:0;">
+                <div style="font-size:23px; font-weight:700; color:white; margin-bottom:8px; letter-spacing:-0.01em;">{{ publicSelectedStaff.name }}</div>
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:8px;">
+                  <span style="font-size:14px; color:#93b0d8; font-weight:500;">{{ publicSelectedStaff.rank }}</span>
+                  <span style="color:rgba(255,255,255,0.2); font-size:12px;">|</span>
+                  <span style="font-size:12px; color:rgba(255,255,255,0.55); font-family:'JetBrains Mono',monospace;"># {{ publicSelectedStaff.serviceNumber }}</span>
+                </div>
+                <!-- Batch badge (commissioning/enlistment set) -->
+                <div style="display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); padding:5px 12px; border-radius:20px;">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+                  <span style="font-size:11px; font-weight:600; color:rgba(255,255,255,0.6); letter-spacing:0.5px;">{{ publicSelectedStaff.batch }}</span>
+                </div>
+              </div>
+              <!-- Status -->
+              <div style="position:absolute; top:20px; right:24px; background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.25); padding:5px 12px; border-radius:6px; display:flex; align-items:center; gap:6px;">
+                <div style="width:6px; height:6px; border-radius:50%; background:#4ade80; flex-shrink:0;"></div>
+                <span style="font-size:10px; font-weight:700; color:#4ade80; letter-spacing:0.5px;">ACTIVE DUTY</span>
+              </div>
+            </div>
+
+            <!-- Current Deployment highlight -->
+            <sc-if value="{{ hasPublicCurrentDep }}">
+              <div style="margin:20px 28px; background:#f8fafc; border:1px solid #e2e8f0; border-left:3px solid #1e3a8a; border-radius:8px; padding:16px 20px;">
+                <div style="font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#94a3b8; margin-bottom:6px;">Current Appointment</div>
+                <div style="font-size:16px; font-weight:700; color:#0f172a; margin-bottom:8px;">{{ publicProfileCurrentDep.appointment }}</div>
+                <div style="display:flex; gap:24px; flex-wrap:wrap;">
+                  <div>
+                    <div style="font-size:9px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:2px;">Unit</div>
+                    <div style="font-size:13px; color:#374151; font-weight:500;">{{ publicProfileCurrentDep.unit }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:9px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:2px;">Department</div>
+                    <div style="font-size:13px; color:#374151;">{{ publicProfileCurrentDep.department }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:9px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:2px;">Since</div>
+                    <div style="font-size:13px; color:#374151;">{{ publicProfileCurrentDepDate }}</div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- Two columns: Courses + Deployments -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; margin:0 28px 24px; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden;">
+              <div style="padding:18px 20px; border-right:1px solid #e2e8f0;">
+                <div style="font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#94a3b8; margin-bottom:14px;">Courses Attended</div>
+                <sc-for list="{{ publicProfileCourses }}" as="course" hint-placeholder-count="3">
+                  <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid #f8fafc; align-items:flex-start;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2.5" style="flex-shrink:0; margin-top:2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <div>
+                      <div style="font-size:13px; font-weight:500; color:#0f172a;">{{ course.courseName }}</div>
+                      <div style="font-size:11px; color:#64748b; margin-top:1px;">{{ course.institution }} · {{ course.year }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="padding:18px 20px;">
+                <div style="font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#94a3b8; margin-bottom:14px;">Last 5 Appointments</div>
+                <sc-for list="{{ publicProfileLast5 }}" as="dep" hint-placeholder-count="5">
+                  <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid #f8fafc; align-items:flex-start;">
+                    <div style="width:20px; height:20px; border-radius:50%; background:#0d1b2e; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:rgba(255,255,255,0.6); flex-shrink:0; margin-top:1px;">{{ dep.number }}</div>
+                    <div>
+                      <div style="font-size:13px; font-weight:500; color:#0f172a;">{{ dep.appointment }}</div>
+                      <div style="font-size:11px; color:#64748b; margin-top:1px;">{{ dep.unit }}</div>
+                      <div style="font-size:10px; color:#94a3b8; margin-top:1px;">{{ dep.startDate }} – {{ dep.endLabel }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- Footer -->
+      <div style="background:#0d1b2e; padding:16px 32px; display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:11px; font-weight:600; color:rgba(255,255,255,0.35); letter-spacing:1px; text-transform:uppercase;">NNPMS</span>
+        <span style="font-size:11px; color:rgba(255,255,255,0.2);">© 2024 Nigerian Navy</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══ MAIN APP ══ -->
+  <sc-if value="{{ isMainApp }}">
+    <div style="display:flex; flex-direction:column; height:100vh; overflow:hidden; position:relative;">
+
+      <!-- ── PERSISTENT TOP BAR (hamburger always visible) ── -->
+      <div style="height:52px; background:white; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; padding:0 16px; gap:12px; flex-shrink:0; z-index:60; position:relative;">
+        <!-- Hamburger / X toggle — always visible -->
+        <button onClick="{{ toggleSidebar }}" style="width:36px; height:36px; background:#f1f5f9; border:none; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#475569;" style-hover="background:#e2e8f0;" title="Toggle menu">
+          <sc-if value="{{ showSidebarText }}" hint-placeholder-val="{{ false }}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </sc-if>
+          <sc-if value="{{ sidebarCollapsed }}" hint-placeholder-val="{{ true }}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </sc-if>
+        </button>
+        <img src="uploads/Navy-logo.png" style="width:28px; height:auto; object-fit:contain; flex-shrink:0;" alt="NNPMS" />
+        <div style="font-size:14px; font-weight:700; color:#0f172a; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ pageTitle }}</div>
+        <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+          <sc-if value="{{ isAdmin }}">
+            <button onClick="{{ navToAddStaff }}" style="background:#1e3a8a; color:white; border:none; padding:7px 13px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap;" style-hover="background:#162f72;">+ Add Staff</button>
+          </sc-if>
+          <div style="width:32px; height:32px; border-radius:50%; background:#0f172a; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white; flex-shrink:0;" title="{{ currentUserName }}">{{ currentUserInitials }}</div>
+        </div>
+      </div>
+
+      <!-- ── BODY ROW: sidebar + main ── -->
+      <div style="flex:1; display:flex; overflow:hidden; position:relative;">
+
+      <!-- Mobile overlay backdrop -->
+      <sc-if value="{{ showMobileOverlay }}">
+        <div onClick="{{ toggleSidebar }}" style="position:absolute; inset:0; background:rgba(0,0,0,0.45); z-index:40;"></div>
+      </sc-if>
+
+      <!-- SIDEBAR -->
+      <aside id="spms-sidebar" style="width:{{ sidebarWidth }}; background:white; border-right:1px solid #e2e8f0; display:flex; flex-direction:column; flex-shrink:0; overflow:hidden; transition:width 0.22s cubic-bezier(.4,0,.2,1); position:{{ sidebarPosition }}; top:0; left:0; height:100%; z-index:50;">
+
+        <!-- User card (shown when expanded) -->
+        <sc-if value="{{ showSidebarText }}">
+          <div style="padding:12px 14px 10px; border-bottom:1px solid #f1f5f9;">
+            <div style="display:flex; align-items:center; gap:9px;">
+              <div style="width:36px; height:36px; border-radius:8px; background:#1e3a8a; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:white; flex-shrink:0;">{{ currentUserInitials }}</div>
+              <div style="min-width:0;">
+                <div style="font-size:13px; font-weight:600; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ currentUserName }}</div>
+                <div style="font-size:10px; color:#94a3b8; margin-top:1px;">{{ currentUserRole }}</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- Nav items — icons always visible, labels shown when expanded -->
+        <nav style="flex:1; padding:8px 6px; overflow-y:auto; overflow-x:hidden;">
+          <sc-if value="{{ showSidebarText }}">
+            <div style="font-size:9px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:1.5px; padding:4px 8px 3px; margin-bottom:2px;">Management</div>
+          </sc-if>
+          <div onClick="{{ navToDirectory }}" title="Personnel Search" style="display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:6px; cursor:pointer; background:{{ navDirBg }}; color:{{ navDirColor }}; font-weight:{{ navDirFw }};" style-hover="background:#f1f5f9;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <sc-if value="{{ showSidebarText }}"><span style="font-size:13px; white-space:nowrap;">Personnel Search</span></sc-if>
+          </div>
+          <div onClick="{{ navToDashboard }}" title="Statistics" style="display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:6px; cursor:pointer; background:{{ navDashBg }}; color:{{ navDashColor }}; font-weight:{{ navDashFw }};" style-hover="background:#f1f5f9;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <sc-if value="{{ showSidebarText }}"><span style="font-size:13px; white-space:nowrap;">Statistics</span></sc-if>
+          </div>
+
+          <sc-if value="{{ isAdmin }}">
+            <sc-if value="{{ showSidebarText }}">
+              <div style="font-size:9px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:1.5px; padding:10px 8px 3px; margin-bottom:2px;">Admin</div>
+            </sc-if>
+            <div onClick="{{ navToAddStaff }}" title="Register Personnel" style="display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:6px; cursor:pointer; background:{{ navAddBg }}; color:{{ navAddColor }}; font-weight:{{ navAddFw }};" style-hover="background:#f1f5f9;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="23" y2="8"/><line x1="21" y1="6" x2="21" y2="10"/></svg>
+              <sc-if value="{{ showSidebarText }}"><span style="font-size:13px; white-space:nowrap;">Register Personnel</span></sc-if>
+            </div>
+            <div onClick="{{ navToExport }}" title="Export Records" style="display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:6px; cursor:pointer; background:{{ navExportBg }}; color:{{ navExportColor }}; font-weight:{{ navExportFw }};" style-hover="background:#f1f5f9;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <sc-if value="{{ showSidebarText }}"><span style="font-size:13px; white-space:nowrap;">Export Records</span></sc-if>
+            </div>
+            <sc-if value="{{ showSidebarText }}">
+              <div style="font-size:9px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:1.5px; padding:10px 8px 3px; margin-bottom:2px;">Security</div>
+            </sc-if>
+            <div onClick="{{ navToUserMgmt }}" title="System Audit" style="display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:6px; cursor:pointer; background:{{ navUserBg }}; color:{{ navUserColor }}; font-weight:{{ navUserFw }};" style-hover="background:#f1f5f9;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <sc-if value="{{ showSidebarText }}"><span style="font-size:13px; white-space:nowrap;">System Audit</span></sc-if>
+            </div>
+          </sc-if>
+        </nav>
+
+        <!-- Bottom links -->
+        <div style="padding:6px 6px 10px; border-top:1px solid #f1f5f9;">
+          <sc-if value="{{ isAdmin }}">
+            <div style="padding:8px 10px;">
+              <button onClick="{{ navToAddStaff }}" title="New Staff Entry" style="width:100%; background:#1e3a8a; color:white; border:none; padding:9px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px;" style-hover="background:#162f72;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <sc-if value="{{ showSidebarText }}"><span>New Staff Entry</span></sc-if>
+              </button>
+            </div>
+          </sc-if>
+          <div onClick="{{ navToPublic }}" title="Public Portal" style="display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:6px; cursor:pointer; color:#94a3b8;" style-hover="background:#f1f5f9; color:#475569;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <sc-if value="{{ showSidebarText }}"><span style="font-size:12px;">Public Portal</span></sc-if>
+          </div>
+          <div onClick="{{ handleCopyPortalLink }}" title="Share Portal Link" style="display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:6px; cursor:pointer; color:#94a3b8;" style-hover="background:#f1f5f9; color:#1e3a8a;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <sc-if value="{{ showSidebarText }}"><span style="font-size:12px;">Share Portal Link</span></sc-if>
+          </div>
+          <div onClick="{{ handleLogout }}" title="Sign Out" style="display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:6px; cursor:pointer; color:#ef4444;" style-hover="background:#fef2f2;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <sc-if value="{{ showSidebarText }}"><span style="font-size:12px; font-weight:500;">Sign Out</span></sc-if>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CONTENT WRAPPER -->
+      <div style="flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;">
+
+        <!-- MAIN CONTENT -->
+        <main style="flex:1; overflow-y:auto; background:#f7f9fb; padding:20px 16px 28px; min-width:0;">
+
+          <!-- ═══ DASHBOARD ═══ -->
+          <sc-if value="{{ isDashboard }}">
+            <div style="animation:slideUp 0.3s ease;">
+              <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px;">
+                <div>
+                  <div style="font-size:28px; font-weight:700; color:#0f172a; letter-spacing:-0.01em;">Administrative Dashboard</div>
+                  <div style="font-size:14px; color:#64748b; margin-top:4px;">Real-time personnel monitoring and institutional oversight.</div>
+                </div>
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:8px; padding:8px 14px; display:flex; align-items:center; gap:7px; font-size:13px; color:#475569; flex-shrink:0;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  {{ todayDate }}
+                </div>
+              </div>
+
+              <!-- Stats + Quick Actions -->
+              <div style="display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:20px;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px;">
+                  <div style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; display:flex; align-items:center; gap:14px;">
+                    <div style="width:40px; height:40px; background:#eef2fa; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div>
+                      <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px;">Total Staff</div>
+                      <div style="font-size:28px; font-weight:700; color:#0f172a; line-height:1;">{{ totalStaff }}</div>
+                    </div>
+                  </div>
+                  <div style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; display:flex; align-items:center; gap:14px;">
+                    <div style="width:40px; height:40px; background:#f0fdf4; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </div>
+                    <div>
+                      <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px;">Active</div>
+                      <div style="font-size:28px; font-weight:700; color:#0f172a; line-height:1;">{{ activeDeployments }}</div>
+                    </div>
+                  </div>
+                  <div style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; display:flex; align-items:center; gap:14px;">
+                    <div style="width:40px; height:40px; background:#fef9ec; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </div>
+                    <div>
+                      <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px;">This Month</div>
+                      <div style="font-size:28px; font-weight:700; color:#0f172a; line-height:1;">{{ thisMonthAdded }}</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Recent Personnel -->
+              <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden;">
+                <div style="padding:14px 20px; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; justify-content:space-between;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:15px; font-weight:600; color:#0f172a;">Recently Added Personnel</span>
+                    <span style="background:#dcfce7; color:#16a34a; font-size:9px; font-weight:700; padding:3px 8px; border-radius:20px; letter-spacing:0.5px;">LIVE</span>
+                  </div>
+                  <button onClick="{{ navToDirectory }}" style="background:none; border:none; color:#1e3a8a; font-size:12px; cursor:pointer; font-weight:500;" style-hover="color:#162f72;">View All →</button>
+                </div>
+                <div style="display:grid; grid-template-columns:2fr 1fr 1.5fr 80px; padding:9px 20px; background:#f8fafc; border-bottom:1px solid #f1f5f9;">
+                  <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Name</div>
+                  <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Rank</div>
+                  <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Unit</div>
+                  <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Status</div>
+                </div>
+                <sc-for list="{{ recentStaff }}" as="staff" hint-placeholder-count="5">
+                  <div onClick="{{ staff.onSelect }}" style="display:grid; grid-template-columns:2fr 1fr 1.5fr 80px; padding:12px 20px; border-bottom:1px solid #f8fafc; cursor:pointer; align-items:center;" style-hover="background:#f8fafc;">
+                    <div style="display:flex; align-items:center; gap:11px;">
+                      <div style="width:34px; height:34px; border-radius:50%; background:{{ staff.avatarColor }}; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:white; flex-shrink:0;">{{ staff.initials }}</div>
+                      <div>
+                        <div style="font-size:13px; font-weight:600; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ staff.name }}</div>
+                        <div style="font-size:11px; color:#94a3b8; margin-top:1px; font-family:'JetBrains Mono',monospace;">{{ staff.serviceNumber }}</div>
+                      </div>
+                    </div>
+                    <div style="font-size:12px; color:#475569;">{{ staff.rank }}</div>
+                    <div style="font-size:12px; color:#64748b; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:8px;">{{ staff.currentUnit }}</div>
+                    <div><span style="background:#dcfce7; color:#166534; font-size:10px; font-weight:600; padding:3px 8px; border-radius:20px; white-space:nowrap;">Active</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ═══ STAFF DIRECTORY ═══ -->
+          <sc-if value="{{ isDirectory }}">
+            <div style="animation:slideUp 0.3s ease;">
+              <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:22px;">
+                <div>
+                  <div style="font-size:28px; font-weight:700; color:#0f172a; letter-spacing:-0.01em;">Staff Directory</div>
+                  <div style="font-size:14px; color:#64748b; margin-top:4px;">Manage and monitor administrative records for all active personnel.</div>
+                </div>
+                <div style="display:flex; gap:16px; background:white; border:1px solid #e2e8f0; border-radius:8px; padding:10px 20px;">
+                  <div style="text-align:center;">
+                    <div style="font-size:9px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Active</div>
+                    <div style="font-size:18px; font-weight:700; color:#16a34a;">{{ activeDeployments }}</div>
+                  </div>
+                  <div style="width:1px; background:#f1f5f9;"></div>
+                  <div style="text-align:center;">
+                    <div style="font-size:9px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Total</div>
+                    <div style="font-size:18px; font-weight:700; color:#0f172a;">{{ totalStaff }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Search bar -->
+              <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:16px 20px; margin-bottom:14px;">
+                <div style="display:flex; gap:10px; margin-bottom:14px;">
+                  <div style="flex:1; position:relative;">
+                    <svg style="position:absolute; left:13px; top:50%; transform:translateY(-50%);" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input value="{{ searchQuery }}" onInput="{{ handleSearch }}" type="text" placeholder="Search by name, service number, or unit..." style="width:100%; padding:10px 13px 10px 36px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; outline:none; background:#fafafa;" />
+                  </div>
+                  <button style="background:#1e3a8a; color:white; border:none; padding:10px 22px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#162f72;">Search</button>
+                </div>
+                <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                  <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Rank Level</div>
+                  <select value="{{ filterRank }}" onChange="{{ handleFilterRank }}" style="padding:7px 10px; border:1px solid #e2e8f0; border-radius:6px; font-size:12px; color:#374151; background:white; cursor:pointer; outline:none; min-width:120px;">
+                    <sc-for list="{{ rankFilterOptions }}" as="opt" hint-placeholder-count="3">
+                      <option value="{{ opt.v }}">{{ opt.l }}</option>
+                    </sc-for>
+                  </select>
+                  <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Specialization</div>
+                  <select value="{{ filterCourse }}" onChange="{{ handleFilterCourse }}" style="padding:7px 10px; border:1px solid #e2e8f0; border-radius:6px; font-size:12px; color:#374151; background:white; cursor:pointer; outline:none; min-width:140px;">
+                    <sc-for list="{{ courseFilterOptions }}" as="opt" hint-placeholder-count="3">
+                      <option value="{{ opt.v }}">{{ opt.l }}</option>
+                    </sc-for>
+                  </select>
+                  <select value="{{ sortBy }}" onChange="{{ handleSortChange }}" style="padding:7px 10px; border:1px solid #e2e8f0; border-radius:6px; font-size:12px; color:#374151; background:white; cursor:pointer; outline:none; min-width:120px;">
+                    <option value="az">Sort: A → Z</option>
+                    <option value="rank">Sort: By Rank</option>
+                    <option value="recent">Sort: Recent</option>
+                  </select>
+                  <button onClick="{{ clearFilters }}" style="padding:7px 14px; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; font-size:12px; color:#64748b; cursor:pointer; display:flex; align-items:center; gap:5px;" style-hover="background:#e2e8f0;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Reset Filters
+                  </button>
+                </div>
+              </div>
+
+              <!-- Table -->
+              <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden;">
+                <div style="padding:13px 20px; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; justify-content:space-between;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:15px; font-weight:600; color:#0f172a;">Personnel Registry</span>
+                    <span style="background:#f1f5f9; color:#475569; font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px; letter-spacing:0.3px;">{{ staffCount }} records</span>
+                  </div>
+                  <div style="display:flex; gap:8px;" class="no-print">
+                    <sc-if value="{{ isAdmin }}">
+                      <button onClick="{{ navToExport }}" style="padding:6px 13px; background:white; border:1px solid #e2e8f0; border-radius:6px; font-size:12px; color:#475569; cursor:pointer; display:flex; align-items:center; gap:5px;" style-hover="background:#f8fafc;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export
+                      </button>
+                    </sc-if>
+                    <button onClick="{{ handlePrint }}" style="padding:6px 13px; background:white; border:1px solid #e2e8f0; border-radius:6px; font-size:12px; color:#475569; cursor:pointer; display:flex; align-items:center; gap:5px;" style-hover="background:#f8fafc;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                      Print
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Table header -->
+                <div style="display:grid; grid-template-columns:2.5fr 1.2fr 1fr 1.5fr 110px 90px; padding:9px 20px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Full Name</div>
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Service No</div>
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Rank</div>
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Current Unit</div>
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Status</div>
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Actions</div>
+                </div>
+
+                <sc-if value="{{ noStaffFound }}">
+                  <div style="text-align:center; padding:48px; color:#64748b;">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" style="margin-bottom:12px;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <div style="font-size:15px; font-weight:600; color:#374151;">No records found</div>
+                    <div style="font-size:13px; margin-top:3px; color:#94a3b8;">Adjust filters or search term</div>
+                  </div>
+                </sc-if>
+
+                <sc-for list="{{ staffWithDisplay }}" as="staff" hint-placeholder-count="8">
+                  <div style="display:grid; grid-template-columns:2.5fr 1.2fr 1fr 1.5fr 110px 90px; padding:14px 20px; border-bottom:1px solid #f8fafc; align-items:center;" style-hover="background:#f8fafc;">
+                    <div style="display:flex; align-items:center; gap:12px; cursor:pointer;" onClick="{{ staff.onSelect }}">
+                      <div style="width:40px; height:40px; border-radius:50%; background:{{ staff.avatarColor }}; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:white; flex-shrink:0;">{{ staff.initials }}</div>
+                      <div>
+                        <div style="font-size:14px; font-weight:600; color:#0f172a;">{{ staff.name }}</div>
+                        <div style="font-size:11px; color:#94a3b8; margin-top:1px;">Joined {{ staff.yearJoined }}</div>
+                      </div>
+                    </div>
+                    <div style="font-size:12px; color:#475569; font-family:'JetBrains Mono',monospace;">{{ staff.serviceNumber }}</div>
+                    <div style="font-size:13px; color:#374151;">{{ staff.rank }}</div>
+                    <div style="font-size:12px; color:#64748b; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:8px;">{{ staff.currentUnit }}</div>
+                    <div>
+                      <span style="background:#dcfce7; color:#166534; font-size:10px; font-weight:700; padding:4px 9px; border-radius:20px; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">
+                        <span style="width:5px; height:5px; border-radius:50%; background:#16a34a; display:inline-block;"></span>
+                        ACTIVE
+                      </span>
+                    </div>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                      <button onClick="{{ staff.onSelect }}" title="View profile" style="width:30px; height:30px; background:#f1f5f9; border:none; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#64748b;" style-hover="background:#dde8f5; color:#1e3a8a;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      </button>
+                      <sc-if value="{{ isAdmin }}">
+                        <button onClick="{{ staff.onEdit }}" title="Edit" style="width:30px; height:30px; background:#f1f5f9; border:none; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#64748b;" style-hover="background:#e2e8f0; color:#374151;">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button onClick="{{ staff.onDelete }}" title="Delete" style="width:30px; height:30px; background:#f1f5f9; border:none; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#64748b;" style-hover="background:#fee2e2; color:#ef4444;">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                        </button>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ═══ STAFF PROFILE ═══ -->
+          <sc-if value="{{ isProfile }}">
+            <sc-if value="{{ hasProfile }}">
+              <div style="animation:slideUp 0.3s ease;">
+                <!-- Breadcrumb + actions -->
+                <div class="no-print" style="display:flex; align-items:center; margin-bottom:18px;">
+                  <button onClick="{{ profileOnBack }}" style="background:none; border:none; font-size:11px; font-weight:600; color:#94a3b8; cursor:pointer; text-transform:uppercase; letter-spacing:0.8px; padding:0;" style-hover="color:#1e3a8a;">Personnel</button>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2" style="margin:0 6px;"><path d="M9 18l6-6-6-6"/></svg>
+                  <span style="font-size:11px; font-weight:700; color:#0f172a; text-transform:uppercase; letter-spacing:0.8px;">Profile Detail</span>
+                  <div style="flex:1;"></div>
+                  <div style="display:flex; gap:8px;">
+                    <button onClick="{{ handlePrint }}" style="background:white; border:1px solid #e2e8f0; color:#374151; padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:6px;" style-hover="background:#f8fafc;">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                      Print Record
+                    </button>
+                    <button onClick="{{ profileOnShare }}" style="background:white; border:1px solid #e2e8f0; color:#374151; padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:6px;" style-hover="background:#f0f7ff; border-color:#1e3a8a; color:#1e3a8a;">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                      Share Public Link
+                    </button>
+                    <sc-if value="{{ isAdmin }}">
+                      <button onClick="{{ profileOnEdit }}" style="background:#1e3a8a; color:white; border:none; padding:8px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#162f72;">Edit Profile</button>
+                      <button onClick="{{ profileOnDelete }}" style="background:#fee2e2; color:#dc2626; border:none; padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#fecaca;">Delete</button>
+                    </sc-if>
+                  </div>
+                </div>
+
+                <!-- Profile main card -->
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; margin-bottom:16px;">
+                  <!-- Dark header -->
+                  <div style="background:#0f172a; padding:28px 32px; position:relative; min-height:130px; display:flex; align-items:flex-end; gap:22px;">
+                    <!-- Photo -->
+                    <div style="width:90px; height:110px; border-radius:6px; overflow:hidden; border:2px solid rgba(255,255,255,0.2); flex-shrink:0; background:{{ profileAvatarColor }}; display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:700; color:white; position:relative; margin-bottom:4px;">
+                      {{ profilePhotoEl }}
+                      <sc-if value="{{ noProfilePhoto }}" hint-placeholder-val="{{ true }}">
+                        <span style="position:relative; z-index:1;">{{ profileInitials }}</span>
+                      </sc-if>
+                    </div>
+                    <!-- Details -->
+                    <div style="padding-bottom:6px; flex:1;">
+                      <div style="font-size:24px; font-weight:700; color:white; margin-bottom:8px; letter-spacing:-0.01em;">{{ selectedStaff.name }}</div>
+                      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+                        <span style="display:flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,0.7);">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#93b0d8" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                          {{ selectedStaff.rank }}
+                        </span>
+                        <span style="font-size:12px; color:rgba(255,255,255,0.4);">#</span>
+                        <span style="font-size:12px; color:rgba(255,255,255,0.6); font-family:'JetBrains Mono',monospace;">{{ selectedStaff.serviceNumber }}</span>
+                        <span style="font-size:12px; color:rgba(255,255,255,0.4);">·</span>
+                        <span style="font-size:12px; color:rgba(255,255,255,0.45);">{{ selectedStaff.course }} · {{ selectedStaff.batch }}</span>
+                      </div>
+                      <div style="font-size:11px; color:rgba(255,255,255,0.35); margin-top:8px; display:flex; align-items:center; gap:5px;">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Verified {{ selectedStaff.createdAt }}
+                      </div>
+                    </div>
+                    <!-- Status badge -->
+                    <div style="position:absolute; top:22px; right:28px; background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.3); padding:6px 14px; border-radius:6px; display:flex; align-items:center; gap:6px;">
+                      <div style="width:7px; height:7px; border-radius:50%; background:#4ade80; flex-shrink:0;"></div>
+                      <span style="font-size:11px; font-weight:700; color:#4ade80; letter-spacing:0.5px;">ACTIVE DUTY</span>
+                    </div>
+                  </div>
+
+                  <!-- Current Appointment -->
+                  <sc-if value="{{ hasCurrentDep }}">
+                    <div style="margin:20px 28px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:18px 22px; display:flex; align-items:flex-start; gap:14px;">
+                      <div style="width:36px; height:36px; background:#dde8f5; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                      </div>
+                      <div style="flex:1;">
+                        <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:#94a3b8; margin-bottom:5px;">Current Appointment</div>
+                        <div style="font-size:17px; font-weight:700; color:#0f172a; margin-bottom:10px;">{{ profileCurrentDep.appointment }}</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                          <div>
+                            <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:3px;">Effective Since</div>
+                            <div style="font-size:14px; font-weight:500; color:#0f172a;">{{ profileCurrentDepDate }}</div>
+                          </div>
+                          <div>
+                            <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:3px;">Unit / Location</div>
+                            <div style="font-size:14px; font-weight:500; color:#0f172a;">{{ profileCurrentDep.unit }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <!-- Personal Details + Key Qualifications -->
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; margin:0 28px 20px; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden;">
+                    <div style="padding:18px 20px; border-right:1px solid #e2e8f0;">
+                      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                        <div style="font-size:14px; font-weight:600; color:#0f172a;">Personal Details</div>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      </div>
+                      <div style="display:flex; flex-direction:column; gap:10px;">
+                        <div style="display:flex; gap:8px;">
+                          <span style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px; min-width:90px; margin-top:2px;">Full Name</span>
+                          <span style="font-size:13px; color:#191c1e; font-weight:500;">{{ selectedStaff.name }}</span>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                          <span style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px; min-width:90px; margin-top:2px;">Service No.</span>
+                          <span style="font-size:13px; color:#191c1e; font-family:'JetBrains Mono',monospace;">{{ selectedStaff.serviceNumber }}</span>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                          <span style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px; min-width:90px; margin-top:2px;">Year Joined</span>
+                          <span style="font-size:13px; color:#191c1e;">{{ selectedStaff.yearJoined }}</span>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                          <span style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px; min-width:90px; margin-top:2px;">Dept.</span>
+                          <span style="font-size:13px; color:#191c1e;">{{ profileCurrentDep.department }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="padding:18px 20px;">
+                      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                        <div style="font-size:14px; font-weight:600; color:#0f172a;">Key Qualifications</div>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+                      </div>
+                      <sc-for list="{{ profileCourses }}" as="course" hint-placeholder-count="3">
+                        <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:10px;">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2.5" style="flex-shrink:0; margin-top:1px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                          <div>
+                            <div style="font-size:13px; font-weight:500; color:#0f172a;">{{ course.courseName }}</div>
+                            <div style="font-size:11px; color:#64748b;">{{ course.institution }}, {{ course.year }}</div>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+
+                  <!-- Deployment History -->
+                  <div style="margin:0 28px 24px;">
+                    <div style="font-size:14px; font-weight:600; color:#0f172a; margin-bottom:12px;">Deployment History</div>
+                    <div style="border:1px solid #e2e8f0; border-radius:8px; overflow:hidden;">
+                      <div style="display:grid; grid-template-columns:2fr 1.5fr 1fr 1fr; padding:9px 16px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                        <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Appointment</div>
+                        <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Unit</div>
+                        <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Period</div>
+                        <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Dept.</div>
+                      </div>
+                      <sc-for list="{{ profileLast5 }}" as="dep" hint-placeholder-count="5">
+                        <div style="display:grid; grid-template-columns:2fr 1.5fr 1fr 1fr; padding:12px 16px; border-bottom:1px solid #f8fafc; align-items:center;" style-hover="background:#f8fafc;">
+                          <div style="font-size:13.5px; font-weight:500; color:#0f172a;">{{ dep.appointment }}</div>
+                          <div style="font-size:13px; color:#475569;">{{ dep.unit }}</div>
+                          <div style="font-size:12px; color:#64748b; font-family:'JetBrains Mono',monospace;">{{ dep.startDate }}–{{ dep.endLabel }}</div>
+                          <div style="font-size:12px; color:#94a3b8;">{{ dep.department }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </sc-if>
+
+          <!-- ═══ ADD / EDIT STAFF FORM ═══ -->
+          <sc-if value="{{ showStaffForm }}">
+            <div style="animation:slideUp 0.3s ease; max-width:840px;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:22px;">
+                <button onClick="{{ handleFormCancel }}" style="background:white; border:1px solid #e2e8f0; color:#374151; padding:7px 14px; border-radius:8px; cursor:pointer; font-size:13px; display:flex; align-items:center; gap:6px;" style-hover="background:#f8fafc;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                  Cancel
+                </button>
+                <div style="font-size:22px; font-weight:700; color:#0f172a; letter-spacing:-0.01em;">{{ formTitle }}</div>
+              </div>
+
+              <sc-if value="{{ formError }}">
+                <div style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:11px 16px; border-radius:8px; font-size:13px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  {{ formError }}
+                </div>
+              </sc-if>
+
+              <!-- Section A: Personal Details -->
+              <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; margin-bottom:12px; overflow:hidden;">
+                <div style="padding:14px 22px; background:#f8fafc; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; gap:10px;">
+                  <div style="width:24px; height:24px; background:#0f172a; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white;">A</div>
+                  <div style="font-size:14px; font-weight:600; color:#0f172a;">Personal Details</div>
+                </div>
+                <div style="padding:20px 22px;">
+                  <div style="display:flex; gap:20px; align-items:flex-start;">
+                    <!-- Photo upload -->
+                    <div style="flex-shrink:0; width:120px;">
+                      <label style="display:block; font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:7px;">Passport Photo</label>
+                      <div style="width:120px; height:148px; border:2px dashed #e2e8f0; border-radius:8px; background:#f8fafc; overflow:hidden; display:flex; align-items:center; justify-content:center; position:relative;">
+                        {{ formPhotoEl }}
+                        <sc-if value="{{ noFormPhoto }}" hint-placeholder-val="{{ true }}">
+                          <div style="text-align:center; padding:12px; position:relative; z-index:1;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" style="margin-bottom:8px;"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                            <div style="font-size:10px; color:#94a3b8; line-height:1.5;">Photo</div>
+                          </div>
+                        </sc-if>
+                      </div>
+                      <label for="spms-photo-upload" style="display:flex; align-items:center; justify-content:center; gap:5px; margin-top:8px; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:7px; cursor:pointer; font-size:11px; font-weight:600; color:#475569;" style-hover="background:#e2e8f0;">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Upload
+                      </label>
+                      <input id="spms-photo-upload" type="file" accept="image/*" onChange="{{ handlePhotoUpload }}" style="display:none;" />
+                    </div>
+                    <!-- Fields -->
+                    <div style="flex:1; display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                      <div style="grid-column:1/-1;">
+                        <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Full Name *</label>
+                        <input value="{{ formName }}" data-field="name" onInput="{{ handleFormInput }}" type="text" placeholder="e.g. Chukwuemeka Adeyemi" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; outline:none; background:#fafafa;" />
+                      </div>
+                      <div>
+                        <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Rank *</label>
+                        <select value="{{ formRank }}" data-field="rank" onChange="{{ handleFormInput }}" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; background:#fafafa; cursor:pointer; outline:none;">
+                          <option value="">— Select Rank —</option>
+                          <sc-for list="{{ rankOptions }}" as="opt" hint-placeholder-count="5">
+                            <option value="{{ opt.v }}">{{ opt.l }}</option>
+                          </sc-for>
+                        </select>
+                      </div>
+                      <div>
+                        <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Service Number *</label>
+                        <input value="{{ formServiceNumber }}" data-field="serviceNumber" onInput="{{ handleFormInput }}" type="text" placeholder="e.g. N/COL/4521" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; outline:none; background:#fafafa; font-family:'JetBrains Mono',monospace;" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section B -->
+              <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; margin-bottom:12px; overflow:hidden;">
+                <div style="padding:14px 22px; background:#f8fafc; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; gap:10px;">
+                  <div style="width:24px; height:24px; background:#0f172a; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white;">B</div>
+                  <div style="font-size:14px; font-weight:600; color:#0f172a;">Course / Batch</div>
+                </div>
+                <div style="padding:20px 22px;">
+                  <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Batch</label>
+                  <input value="{{ formBatch }}" data-field="batch" onInput="{{ handleFormInput }}" type="text" placeholder="e.g. Batch 14" style="width:100%; max-width:320px; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; outline:none; background:#fafafa;" />
+                </div>
+              </div>
+
+              <!-- Section C: Courses Attended -->
+              <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; margin-bottom:12px; overflow:hidden;">
+                <div style="padding:14px 22px; background:#f8fafc; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; gap:10px;">
+                  <div style="width:24px; height:24px; background:#0f172a; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white;">C</div>
+                  <div style="font-size:14px; font-weight:600; color:#0f172a; flex:1;">Courses Attended</div>
+                  <button onClick="{{ addCourseRow }}" style="display:flex; align-items:center; gap:5px; background:#dde8f5; color:#1e3a8a; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;" style-hover="background:#c5d8f0;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add Course
+                  </button>
+                </div>
+                <div style="padding:16px 22px;">
+                  <sc-if value="{{ hasCourseRows }}">
+                    <div style="display:grid; grid-template-columns:1fr 1fr 80px 32px; gap:8px; margin-bottom:6px;">
+                      <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Course Name</div>
+                      <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Institution</div>
+                      <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Year</div>
+                      <div></div>
+                    </div>
+                    <sc-for list="{{ formCoursesAttended }}" as="course" hint-placeholder-count="2">
+                      <div style="display:grid; grid-template-columns:1fr 1fr 80px 32px; gap:8px; margin-bottom:7px; align-items:center;">
+                        <input value="{{ course.courseName }}" data-id="{{ course.id }}" data-subfield="courseName" onInput="{{ handleCourseInput }}" placeholder="Course name" style="padding:8px 10px; border:1.5px solid #e2e8f0; border-radius:6px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
+                        <input value="{{ course.institution }}" data-id="{{ course.id }}" data-subfield="institution" onInput="{{ handleCourseInput }}" placeholder="Institution" style="padding:8px 10px; border:1.5px solid #e2e8f0; border-radius:6px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
+                        <input value="{{ course.year }}" data-id="{{ course.id }}" data-subfield="year" onInput="{{ handleCourseInput }}" placeholder="Year" style="padding:8px 10px; border:1.5px solid #e2e8f0; border-radius:6px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
+                        <button onClick="{{ course.onRemove }}" style="width:32px; height:32px; background:#fef2f2; color:#ef4444; border:none; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="background:#fee2e2;">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                      </div>
+                    </sc-for>
+                  </sc-if>
+                  <sc-if value="{{ noCourseRows }}">
+                    <div style="text-align:center; padding:14px; color:#94a3b8; font-size:13px; background:#f8fafc; border-radius:7px; border:1px dashed #e2e8f0;">Click "Add Course" to add courses attended</div>
+                  </sc-if>
+                </div>
+              </div>
+
+              <!-- Section D: Deployments -->
+              <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; margin-bottom:12px; overflow:hidden;">
+                <div style="padding:14px 22px; background:#f8fafc; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; gap:10px;">
+                  <div style="width:24px; height:24px; background:#0f172a; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white;">D</div>
+                  <div style="font-size:14px; font-weight:600; color:#0f172a; flex:1;">Appointment / Deployment History</div>
+                  <button onClick="{{ addDeploymentRow }}" style="display:flex; align-items:center; gap:5px; background:#dde8f5; color:#1e3a8a; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;" style-hover="background:#c5d8f0;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add Entry
+                  </button>
+                </div>
+                <div style="padding:16px 22px;">
+                  <sc-if value="{{ hasDeploymentRows }}">
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 80px 80px 32px; gap:8px; margin-bottom:6px;">
+                      <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Appointment</div>
+                      <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Unit</div>
+                      <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Dept.</div>
+                      <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Start</div>
+                      <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">End</div>
+                      <div></div>
+                    </div>
+                    <sc-for list="{{ formDeployments }}" as="dep" hint-placeholder-count="2">
+                      <div style="display:grid; grid-template-columns:1fr 1fr 1fr 80px 80px 32px; gap:8px; margin-bottom:7px; align-items:center;">
+                        <input value="{{ dep.appointment }}" data-id="{{ dep.id }}" data-subfield="appointment" onInput="{{ handleDeploymentInput }}" placeholder="Appointment" style="padding:8px 9px; border:1.5px solid #e2e8f0; border-radius:6px; font-size:12px; color:#0f172a; background:#fafafa; outline:none;" />
+                        <input value="{{ dep.unit }}" data-id="{{ dep.id }}" data-subfield="unit" onInput="{{ handleDeploymentInput }}" placeholder="Unit" style="padding:8px 9px; border:1.5px solid #e2e8f0; border-radius:6px; font-size:12px; color:#0f172a; background:#fafafa; outline:none;" />
+                        <input value="{{ dep.department }}" data-id="{{ dep.id }}" data-subfield="department" onInput="{{ handleDeploymentInput }}" placeholder="Dept." style="padding:8px 9px; border:1.5px solid #e2e8f0; border-radius:6px; font-size:12px; color:#0f172a; background:#fafafa; outline:none;" />
+                        <input value="{{ dep.startDate }}" data-id="{{ dep.id }}" data-subfield="startDate" onInput="{{ handleDeploymentInput }}" placeholder="e.g. Jan 2020" style="padding:8px 9px; border:1.5px solid #e2e8f0; border-radius:6px; font-size:12px; color:#0f172a; background:#fafafa; outline:none;" />
+                        <input value="{{ dep.endDate }}" data-id="{{ dep.id }}" data-subfield="endDate" onInput="{{ handleDeploymentInput }}" placeholder="e.g. Dec 2022" style="padding:8px 9px; border:1.5px solid #e2e8f0; border-radius:6px; font-size:12px; color:#0f172a; background:#fafafa; outline:none;" />
+                        <button onClick="{{ dep.onRemove }}" style="width:32px; height:32px; background:#fef2f2; color:#ef4444; border:none; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="background:#fee2e2;">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                      </div>
+                    </sc-for>
+                  </sc-if>
+                  <sc-if value="{{ noDeploymentRows }}">
+                    <div style="text-align:center; padding:14px; color:#94a3b8; font-size:13px; background:#f8fafc; border-radius:7px; border:1px dashed #e2e8f0;">Click "Add Entry" to add appointment history</div>
+                  </sc-if>
+                </div>
+              </div>
+
+              <!-- Section E: Current Deployment -->
+              <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; margin-bottom:20px; overflow:hidden;">
+                <div style="padding:14px 22px; background:#f8fafc; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; gap:10px;">
+                  <div style="width:24px; height:24px; background:#1e3a8a; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white;">E</div>
+                  <div style="font-size:14px; font-weight:600; color:#0f172a;">Current Deployment</div>
+                </div>
+                <div style="padding:20px 22px; display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                  <div>
+                    <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Appointment Title</label>
+                    <input value="{{ formCurrentAppointment }}" data-field="currentAppointment" onInput="{{ handleFormInput }}" type="text" placeholder="e.g. Chief Instructor" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; outline:none; background:#fafafa;" />
+                  </div>
+                  <div>
+                    <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Unit</label>
+                    <input value="{{ formCurrentUnit }}" data-field="currentUnit" onInput="{{ handleFormInput }}" type="text" placeholder="e.g. AFCSC, Jaji" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; outline:none; background:#fafafa;" />
+                  </div>
+                  <div>
+                    <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Department</label>
+                    <input value="{{ formCurrentDept }}" data-field="currentDept" onInput="{{ handleFormInput }}" type="text" placeholder="e.g. Operations" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; outline:none; background:#fafafa;" />
+                  </div>
+                  <div>
+                    <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Date Assumed Duty</label>
+                    <input value="{{ formDateAssumed }}" data-field="dateAssumed" onInput="{{ handleFormInput }}" type="date" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; color:#0f172a; outline:none; background:#fafafa;" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit -->
+              <div style="display:flex; gap:10px;">
+                <button onClick="{{ handleFormSubmit }}" style="background:#1e3a8a; color:white; border:none; padding:12px 28px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;" style-hover="background:#162f72;">{{ formSubmitLabel }}</button>
+                <button onClick="{{ handleFormCancel }}" style="background:white; color:#64748b; border:1px solid #e2e8f0; padding:12px 22px; border-radius:8px; font-size:14px; cursor:pointer;" style-hover="background:#f8fafc;">Cancel</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ═══ USER MANAGEMENT ═══ -->
+          <sc-if value="{{ isUserMgmt }}">
+            <div style="animation:slideUp 0.3s ease;">
+              <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:22px;">
+                <div>
+                  <div style="font-size:28px; font-weight:700; color:#0f172a; letter-spacing:-0.01em;">User Management</div>
+                  <div style="font-size:14px; color:#64748b; margin-top:4px;">Manage system access and user roles.</div>
+                </div>
+                <button onClick="{{ openAddUserModal }}" style="display:flex; align-items:center; gap:7px; background:#1e3a8a; color:white; border:none; padding:10px 18px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600;" style-hover="background:#162f72;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add User
+                </button>
+              </div>
+              <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden;">
+                <div style="display:grid; grid-template-columns:2fr 1fr 1fr 110px 140px; padding:10px 22px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">User</div>
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Username</div>
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Role</div>
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Last Login</div>
+                  <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Actions</div>
+                </div>
+                <sc-for list="{{ usersWithDisplay }}" as="user" hint-placeholder-count="3">
+                  <div style="display:grid; grid-template-columns:2fr 1fr 1fr 110px 140px; padding:14px 22px; border-bottom:1px solid #f8fafc; align-items:center;" style-hover="background:#f8fafc;">
+                    <div style="display:flex; align-items:center; gap:11px;">
+                      <div style="width:36px; height:36px; border-radius:50%; background:{{ user.avatarColor }}; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:white; flex-shrink:0;">{{ user.initials }}</div>
+                      <div style="font-size:14px; font-weight:500; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ user.name }}</div>
+                    </div>
+                    <div style="font-size:13px; color:#64748b; font-family:'JetBrains Mono',monospace;">{{ user.username }}</div>
+                    <div>
+                      <span style="display:inline-block; background:{{ user.roleBg }}; color:{{ user.roleColor }}; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:0.3px;">{{ user.roleDisplay }}</span>
+                    </div>
+                    <div style="font-size:12px; color:#94a3b8;">{{ user.lastLogin }}</div>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                      <button onClick="{{ user.onEdit }}" style="padding:6px 12px; background:#eef2fa; color:#1e3a8a; border:1px solid #dde8f5; border-radius:6px; cursor:pointer; font-size:11px; font-weight:600; white-space:nowrap;" style-hover="background:#dde8f5;">Edit</button>
+                      <sc-if value="{{ user.canDelete }}">
+                        <button onClick="{{ user.onDelete }}" style="padding:6px 12px; background:#fef2f2; color:#ef4444; border:1px solid #fee2e2; border-radius:6px; cursor:pointer; font-size:11px; font-weight:600; white-space:nowrap;" style-hover="background:#fee2e2;">Remove</button>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ═══ EXPORT ═══ -->
+          <sc-if value="{{ isExport }}">
+            <div style="animation:slideUp 0.3s ease; max-width:720px;">
+              <div style="font-size:28px; font-weight:700; color:#0f172a; letter-spacing:-0.01em; margin-bottom:6px;">Export Reports</div>
+              <div style="font-size:14px; color:#64748b; margin-bottom:24px;">Generate and download personnel records in your preferred format.</div>
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px;">
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:24px 20px; text-align:center;">
+                  <div style="width:48px; height:48px; border-radius:10px; background:#fef2f2; margin:0 auto 14px; display:flex; align-items:center; justify-content:center;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  </div>
+                  <div style="font-size:15px; font-weight:700; color:#0f172a; margin-bottom:5px;">PDF Report</div>
+                  <div style="font-size:12px; color:#64748b; line-height:1.5; margin-bottom:16px;">Full personnel report with profiles and history</div>
+                  <button onClick="{{ handleExportPDF }}" style="width:100%; background:#dc2626; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600;" style-hover="background:#b91c1c;">Export PDF</button>
+                </div>
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:24px 20px; text-align:center;">
+                  <div style="width:48px; height:48px; border-radius:10px; background:#f0fdf4; margin:0 auto 14px; display:flex; align-items:center; justify-content:center;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><rect x="8" y="12" width="8" height="2"/><rect x="8" y="16" width="8" height="2"/></svg>
+                  </div>
+                  <div style="font-size:15px; font-weight:700; color:#0f172a; margin-bottom:5px;">Excel Spreadsheet</div>
+                  <div style="font-size:12px; color:#64748b; line-height:1.5; margin-bottom:16px;">Structured directory for analysis in Excel</div>
+                  <button onClick="{{ handleExportExcel }}" style="width:100%; background:#16a34a; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600;" style-hover="background:#15803d;">Export Excel</button>
+                </div>
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:24px 20px; text-align:center;">
+                  <div style="width:48px; height:48px; border-radius:10px; background:#eef2fa; margin:0 auto 14px; display:flex; align-items:center; justify-content:center;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </div>
+                  <div style="font-size:15px; font-weight:700; color:#0f172a; margin-bottom:5px;">CSV Data</div>
+                  <div style="font-size:12px; color:#64748b; line-height:1.5; margin-bottom:16px;">Raw data compatible with any database</div>
+                  <button onClick="{{ handleExportCSV }}" style="width:100%; background:#1e3a8a; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600;" style-hover="background:#162f72;">Export CSV</button>
+                </div>
+              </div>
+              <div style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:16px 20px; border-left:3px solid #1e3a8a;">
+                <div style="font-size:13px; font-weight:600; color:#0f172a; margin-bottom:3px;">Export Summary</div>
+                <div style="font-size:13px; color:#64748b;">Records: <b style="color:#0f172a;">{{ totalStaff }}</b> · Course entries: <b style="color:#0f172a;">{{ totalCoursesCompleted }}</b> · Active: <b style="color:#0f172a;">{{ activeDeployments }}</b></div>
+              </div>
+            </div>
+          </sc-if>
+
+        </main>
+      </div>
+    </div>
+    </div>
+  </sc-if>
+
+  <!-- EDIT USER MODAL -->
+  <sc-if value="{{ showEditUserModal }}">
+    <div style="position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; padding:24px; animation:fadeIn 0.2s ease;">
+      <div style="background:white; border-radius:12px; padding:28px 32px; max-width:440px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.2); border:1px solid #e2e8f0;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+          <div style="font-size:17px; font-weight:700; color:#0f172a;">Edit User</div>
+          <button onClick="{{ closeEditUserModal }}" style="width:30px; height:30px; background:#f1f5f9; border:none; border-radius:7px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#64748b;" style-hover="background:#e2e8f0;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <sc-if value="{{ editUserError }}">
+          <div style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:10px 14px; border-radius:7px; font-size:13px; margin-bottom:14px;">{{ editUserError }}</div>
+        </sc-if>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Full Name</label>
+            <input value="{{ editUserFormName }}" data-field="name" onInput="{{ handleEditUserInput }}" type="text" placeholder="Full name" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Username</label>
+            <input value="{{ editUserFormUsername }}" data-field="username" onInput="{{ handleEditUserInput }}" type="text" placeholder="Username" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none; font-family:'JetBrains Mono',monospace;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">New Password <span style="color:#94a3b8; font-weight:400; text-transform:none; letter-spacing:0;">(leave blank to keep current)</span></label>
+            <input data-field="password" onInput="{{ handleEditUserInput }}" type="password" placeholder="••••••••" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Role</label>
+            <select value="{{ editUserFormRole }}" data-field="role" onChange="{{ handleEditUserInput }}" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; cursor:pointer; outline:none;">
+              <option value="viewer">Viewer (Search &amp; View only)</option>
+              <option value="admin">Administrator (Full Access)</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button onClick="{{ handleSaveEditUser }}" style="flex:1; background:#1e3a8a; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600;" style-hover="background:#162f72;">Save Changes</button>
+          <button onClick="{{ closeEditUserModal }}" style="flex:1; background:#f1f5f9; color:#374151; border:1px solid #e2e8f0; padding:12px; border-radius:8px; cursor:pointer; font-size:14px;" style-hover="background:#e2e8f0;">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- SHARE MODAL -->
+  <sc-if value="{{ showShareModal }}">
+    <div style="position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; padding:24px; animation:fadeIn 0.2s ease;">
+      <div style="background:white; border-radius:12px; padding:28px 32px; max-width:480px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.2); border:1px solid #e2e8f0;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:36px; height:36px; border-radius:8px; background:#eef2fa; display:flex; align-items:center; justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </div>
+            <div style="font-size:16px; font-weight:700; color:#0f172a;">{{ shareModalTitle }}</div>
+          </div>
+          <button onClick="{{ closeShareModal }}" style="width:30px; height:30px; background:#f1f5f9; border:none; border-radius:7px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#64748b;" style-hover="background:#e2e8f0;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div style="font-size:13px; color:#64748b; margin-bottom:12px;">Copy and share this link. Anyone who opens it will see the public portal.</div>
+        <input id="spms-share-url-input" type="text" defaultValue="{{ shareModalUrl }}" readOnly="true" style="width:100%; background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:8px; padding:11px 14px; margin-bottom:14px; font-size:12px; color:#1e3a8a; font-family:'JetBrains Mono',monospace; cursor:text; outline:none;" onClick="{{ selectShareUrl }}" />
+        <div style="display:flex; gap:10px;">
+          <button onClick="{{ handleCopyFromModal }}" style="flex:1; background:#1e3a8a; color:white; border:none; padding:11px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:7px;" style-hover="background:#162f72;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Link
+          </button>
+          <button onClick="{{ closeShareModal }}" style="background:#f1f5f9; color:#374151; border:1px solid #e2e8f0; padding:11px 20px; border-radius:8px; cursor:pointer; font-size:13px;" style-hover="background:#e2e8f0;">Close</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- DELETE MODAL -->
+  <sc-if value="{{ showDeleteModal }}">
+    <div style="position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; padding:24px; animation:fadeIn 0.2s ease;">
+      <div style="background:white; border-radius:12px; padding:28px 32px; max-width:400px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.2); border:1px solid #e2e8f0;">
+        <div style="width:48px; height:48px; border-radius:50%; background:#fef2f2; display:flex; align-items:center; justify-content:center; margin-bottom:16px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        </div>
+        <div style="font-size:18px; font-weight:700; color:#0f172a; margin-bottom:8px;">Confirm Deletion</div>
+        <div style="font-size:14px; color:#64748b; margin-bottom:24px; line-height:1.6;">You are about to permanently remove <b style="color:#0f172a;">{{ deleteConfirmName }}</b>. This cannot be undone.</div>
+        <div style="display:flex; gap:10px;">
+          <button onClick="{{ confirmDeleteFn }}" style="flex:1; background:#ef4444; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600;" style-hover="background:#dc2626;">Yes, Delete</button>
+          <button onClick="{{ cancelDelete }}" style="flex:1; background:#f1f5f9; color:#374151; border:1px solid #e2e8f0; padding:12px; border-radius:8px; cursor:pointer; font-size:14px;" style-hover="background:#e2e8f0;">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ADD USER MODAL -->
+  <sc-if value="{{ showAddUserModal }}">
+    <div style="position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; padding:24px; animation:fadeIn 0.2s ease;">
+      <div style="background:white; border-radius:12px; padding:28px 32px; max-width:440px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.2); border:1px solid #e2e8f0;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+          <div style="font-size:18px; font-weight:700; color:#0f172a;">Add New User</div>
+          <button onClick="{{ closeAddUserModal }}" style="width:30px; height:30px; background:#f1f5f9; border:none; border-radius:7px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#64748b;" style-hover="background:#e2e8f0;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <sc-if value="{{ addUserError }}">
+          <div style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:10px 14px; border-radius:7px; font-size:13px; margin-bottom:14px;">{{ addUserError }}</div>
+        </sc-if>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Full Name</label>
+            <input value="{{ addUserFormName }}" data-field="name" onInput="{{ handleAddUserInput }}" type="text" placeholder="e.g. Lt. Col. John Doe" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Username</label>
+            <input value="{{ addUserFormUsername }}" data-field="username" onInput="{{ handleAddUserInput }}" type="text" placeholder="e.g. johndoe" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Password</label>
+            <input data-field="password" onInput="{{ handleAddUserInput }}" type="password" placeholder="Set a password" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Role</label>
+            <select value="{{ addUserFormRole }}" data-field="role" onChange="{{ handleAddUserInput }}" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; cursor:pointer; outline:none;">
+              <option value="viewer">Viewer (Search &amp; View only)</option>
+              <option value="admin">Administrator (Full Access)</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button onClick="{{ handleAddUser }}" style="flex:1; background:#1e3a8a; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600;" style-hover="background:#162f72;">Create User</button>
+          <button onClick="{{ closeAddUserModal }}" style="flex:1; background:#f1f5f9; color:#374151; border:1px solid #e2e8f0; padding:12px; border-radius:8px; cursor:pointer; font-size:14px;" style-hover="background:#e2e8f0;">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const RANKS = [
+  'Admiral of the Fleet',
+  'Admiral',
+  'Vice Admiral',
+  'Rear Admiral',
+  'Commodore',
+  'Captain',
+  'Commander',
+  'Lieutenant Commander',
+  'Lieutenant',
+  'Sub-Lieutenant',
+  'Acting Sub-Lieutenant',
+  'Midshipman',
+  'Navy Warrant Officer',
+  'Master Warrant Officer',
+  'Warrant Officer',
+  'Petty Officer',
+  'Leading Seaman',
+  'Able Seaman',
+  'Ordinary Seaman'
+];
+
+const INITIAL_STAFF = [
+  { id:1, name:"Chukwuemeka Adeyemi", rank:"Commodore", serviceNumber:"N/COL/4521", course:"Senior Command Course", batch:"Batch 12", yearJoined:2003, status:"active", photo:'', currentDeployment:{ appointment:"Chief Instructor", unit:"Armed Forces Command and Staff College, Jaji", department:"Operations Department", dateAssumed:"2022-03-10" }, coursesAttended:[ {id:1,courseName:"Young Officers Course",institution:"Nigerian Army School of Infantry",year:"2004"}, {id:2,courseName:"Junior Staff Course",institution:"AFCSC, Jaji",year:"2010"}, {id:3,courseName:"Senior Command Course",institution:"AFCSC, Jaji",year:"2020"} ], deployments:[ {id:1,appointment:"Platoon Commander",unit:"1 Division",department:"Operations",startDate:"Jan 2003",endDate:"Jun 2006"}, {id:2,appointment:"Company Commander",unit:"82 Composite Group",department:"Operations",startDate:"Jul 2006",endDate:"Dec 2010"}, {id:3,appointment:"Staff Officer Gd 2",unit:"Army HQ",department:"Planning",startDate:"Jan 2011",endDate:"Mar 2014"}, {id:4,appointment:"Brigade Major",unit:"1 Brigade",department:"Operations",startDate:"Apr 2014",endDate:"Aug 2017"}, {id:5,appointment:"Commanding Officer",unit:"201 Battalion",department:"Command",startDate:"Sep 2017",endDate:"Feb 2022"} ], createdAt:"2024-01-15" },
+  { id:2, name:"Fatima Abdullahi Ibrahim", rank:"Commander", serviceNumber:"N/LTC/7823", course:"Senior Staff Course", batch:"Batch 19", yearJoined:2006, status:"active", photo:'', currentDeployment:{ appointment:"Deputy Director Intelligence", unit:"Defence Intelligence Agency", department:"Intelligence", dateAssumed:"2023-06-01" }, coursesAttended:[ {id:1,courseName:"Young Officers Course",institution:"Military Intelligence School",year:"2007"}, {id:2,courseName:"Intelligence Officers Course",institution:"Defence Intelligence School",year:"2012"}, {id:3,courseName:"Senior Staff Course",institution:"AFCSC, Jaji",year:"2018"} ], deployments:[ {id:1,appointment:"Intelligence Officer",unit:"82 Division",department:"G2",startDate:"Jan 2006",endDate:"Jun 2010"}, {id:2,appointment:"Staff Officer G2",unit:"1 Division",department:"Intelligence",startDate:"Jul 2010",endDate:"Dec 2014"}, {id:3,appointment:"SO1 Intelligence",unit:"DHQ",department:"J2",startDate:"Jan 2015",endDate:"Jun 2019"}, {id:4,appointment:"Director Intelligence",unit:"HQ NE Ops",department:"Intelligence",startDate:"Jul 2019",endDate:"May 2023"} ], createdAt:"2024-01-16" },
+  { id:3, name:"Oluwasegun Babatunde", rank:"Lieutenant Commander", serviceNumber:"N/MAJ/9234", course:"Junior Command Course", batch:"Batch 24", yearJoined:2012, status:"active", photo:'', currentDeployment:{ appointment:"Operations Officer", unit:"7 Division", department:"G3 Operations", dateAssumed:"2023-01-20" }, coursesAttended:[ {id:1,courseName:"Young Officers Course",institution:"Nigerian Army School of Infantry",year:"2013"}, {id:2,courseName:"Parachute Course",institution:"Parachute Training School, Ikeja",year:"2016"}, {id:3,courseName:"Junior Command Course",institution:"NASME, Minna",year:"2022"} ], deployments:[ {id:1,appointment:"Platoon Commander",unit:"7 Division",department:"Operations",startDate:"Jan 2012",endDate:"Dec 2015"}, {id:2,appointment:"Adjutant",unit:"301 Battalion",department:"Administration",startDate:"Jan 2016",endDate:"Jun 2018"}, {id:3,appointment:"Company Commander",unit:"7 Division",department:"Operations",startDate:"Jul 2018",endDate:"Dec 2022"} ], createdAt:"2024-01-18" },
+  { id:4, name:"Musa Garba Mohammed", rank:"Rear Admiral", serviceNumber:"N/BRIG/2341", course:"National War College", batch:"Batch 8", yearJoined:1998, status:"active", photo:'', currentDeployment:{ appointment:"Brigade Commander", unit:"31 Artillery Brigade", department:"Command", dateAssumed:"2021-10-01" }, coursesAttended:[ {id:1,courseName:"Young Officers Course",institution:"Nigerian Army School of Artillery",year:"2000"}, {id:2,courseName:"Junior Staff Course",institution:"AFCSC, Jaji",year:"2008"}, {id:3,courseName:"Senior Command Course",institution:"AFCSC, Jaji",year:"2013"}, {id:4,courseName:"National War College Course",institution:"National War College, Abuja",year:"2018"} ], deployments:[ {id:1,appointment:"Troop Commander",unit:"31 Artillery Brigade",department:"Operations",startDate:"Jan 1998",endDate:"Dec 2002"}, {id:2,appointment:"Battery Commander",unit:"31 Artillery Brigade",department:"Operations",startDate:"Jan 2003",endDate:"Jun 2007"}, {id:3,appointment:"SO2 Artillery",unit:"1 Division",department:"G3",startDate:"Jan 2009",endDate:"Dec 2012"}, {id:4,appointment:"Commanding Officer",unit:"31 Artillery Regiment",department:"Command",startDate:"Jan 2013",endDate:"Dec 2017"}, {id:5,appointment:"GOC Staff",unit:"Army HQ",department:"Operations",startDate:"Jan 2018",endDate:"Sep 2021"} ], createdAt:"2024-01-20" },
+  { id:5, name:"Amaka Okafor", rank:"Lieutenant", serviceNumber:"N/CPT/12450", course:"Signal Officers Course", batch:"Batch 31", yearJoined:2018, status:"active", photo:'', currentDeployment:{ appointment:"Signal Officer", unit:"1 Signal Brigade", department:"Communications", dateAssumed:"2023-08-15" }, coursesAttended:[ {id:1,courseName:"Young Officers Course",institution:"Nigerian Army School of Signals",year:"2019"}, {id:2,courseName:"Signal Officers Course",institution:"Nigerian Army School of Signals",year:"2022"} ], deployments:[ {id:1,appointment:"Signal Platoon Commander",unit:"1 Division Signal Coy",department:"Communications",startDate:"Jan 2018",endDate:"Dec 2021"}, {id:2,appointment:"Signals Officer",unit:"81 Division",department:"Communications",startDate:"Jan 2022",endDate:"Jul 2023"} ], createdAt:"2024-02-05" },
+  { id:6, name:"Ibrahim Yusuf Lawan", rank:"Vice Admiral", serviceNumber:"N/MAJGEN/1203", course:"National Defence College", batch:"Batch 5", yearJoined:1993, status:"active", photo:'', currentDeployment:{ appointment:"General Officer Commanding", unit:"3 Armoured Division", department:"Command", dateAssumed:"2020-07-15" }, coursesAttended:[ {id:1,courseName:"Armoured Young Officers Course",institution:"Nigerian Army Armoured Corps School",year:"1995"}, {id:2,courseName:"Senior Staff Course",institution:"AFCSC, Jaji",year:"2004"}, {id:3,courseName:"Senior Command Course",institution:"AFCSC, Jaji",year:"2009"}, {id:4,courseName:"National Defence College Course",institution:"National Defence College, Abuja",year:"2014"} ], deployments:[ {id:1,appointment:"Troop Commander",unit:"3 Armoured Division",department:"Armour",startDate:"Jan 1993",endDate:"Dec 1998"}, {id:2,appointment:"Squadron Commander",unit:"3 Armoured Division",department:"Armour",startDate:"Jan 1999",endDate:"Jun 2003"}, {id:3,appointment:"Commanding Officer",unit:"31 Armoured Regiment",department:"Command",startDate:"Jan 2005",endDate:"Dec 2008"}, {id:4,appointment:"Brigade Commander",unit:"1 Mechanized Brigade",department:"Command",startDate:"Jan 2010",endDate:"Jun 2015"}, {id:5,appointment:"Commander Training Command",unit:"Training Command",department:"Command",startDate:"Jan 2016",endDate:"Jun 2020"} ], createdAt:"2024-02-10" },
+  { id:7, name:"Chidinma Nwosu", rank:"Sub-Lieutenant", serviceNumber:"N/LT/15632", course:"Young Officers Course", batch:"Batch 42", yearJoined:2023, status:"active", photo:'', currentDeployment:{ appointment:"Platoon Commander", unit:"2 Division", department:"Operations", dateAssumed:"2024-01-10" }, coursesAttended:[ {id:1,courseName:"Young Officers Course",institution:"Nigerian Military School",year:"2023"} ], deployments:[ {id:1,appointment:"Platoon Commander",unit:"2 Division",department:"Operations",startDate:"Jun 2023",endDate:""} ], createdAt:"2024-03-01" },
+  { id:8, name:"Abubakar Sadiq Umar", rank:"Petty Officer", serviceNumber:"N/SSgt/28901", course:"Platoon Weapons Course", batch:"Batch 15", yearJoined:2008, status:"active", photo:'', currentDeployment:{ appointment:"Platoon Weapons Instructor", unit:"Nigerian Army School of Infantry", department:"Training", dateAssumed:"2022-04-01" }, coursesAttended:[ {id:1,courseName:"Basic Military Training",institution:"RSMTC, Zaria",year:"2008"}, {id:2,courseName:"Infantry Platoon Course",institution:"NASI, Jaji",year:"2012"}, {id:3,courseName:"Platoon Weapons Course",institution:"NASI, Jaji",year:"2016"} ], deployments:[ {id:1,appointment:"Section Commander",unit:"7 Division",department:"Operations",startDate:"Jan 2008",endDate:"Dec 2014"}, {id:2,appointment:"Platoon Sergeant",unit:"7 Division",department:"Operations",startDate:"Jan 2015",endDate:"Dec 2019"}, {id:3,appointment:"Training NCO",unit:"NASI",department:"Training",startDate:"Jan 2020",endDate:"Mar 2022"} ], createdAt:"2024-03-15" },
+  { id:9, name:"Ngozi Okonkwo-Eze", rank:"Warrant Officer", serviceNumber:"N/WO1/19823", course:"Warrant Officers Course", batch:"Batch 9", yearJoined:2001, status:"active", photo:'', currentDeployment:{ appointment:"Regimental Sergeant Major", unit:"Army Headquarters", department:"Administration", dateAssumed:"2021-01-15" }, coursesAttended:[ {id:1,courseName:"Basic Military Training",institution:"RSMTC, Zaria",year:"2001"}, {id:2,courseName:"NCO Leadership Course",institution:"NASME, Minna",year:"2008"}, {id:3,courseName:"Warrant Officers Course",institution:"NASME, Minna",year:"2015"} ], deployments:[ {id:1,appointment:"Section Commander",unit:"82 Division",department:"Operations",startDate:"Jan 2001",endDate:"Dec 2006"}, {id:2,appointment:"Platoon Sergeant",unit:"82 Division",department:"Operations",startDate:"Jan 2007",endDate:"Dec 2012"}, {id:3,appointment:"Company Sergeant Major",unit:"1 Division",department:"Operations",startDate:"Jan 2013",endDate:"Dec 2017"}, {id:4,appointment:"RSM",unit:"Army HQ",department:"Administration",startDate:"Jan 2018",endDate:"Dec 2020"} ], createdAt:"2024-03-20" },
+  { id:10, name:"Emmanuel Obi Obiora", rank:"Lieutenant Commander", serviceNumber:"N/MAJ/10234", course:"Medical Officers Course", batch:"Batch 18", yearJoined:2010, status:"active", photo:'', currentDeployment:{ appointment:"Senior Medical Officer", unit:"44 Nigerian Army Reference Hospital", department:"Medical", dateAssumed:"2022-09-01" }, coursesAttended:[ {id:1,courseName:"Medical Officers Course",institution:"AFMED, Lagos",year:"2011"}, {id:2,courseName:"Trauma Management Course",institution:"NAEMED, Yaba",year:"2015"}, {id:3,courseName:"Junior Command Course",institution:"NASME, Minna",year:"2019"} ], deployments:[ {id:1,appointment:"Regimental Medical Officer",unit:"7 Division",department:"Medical",startDate:"Jan 2010",endDate:"Dec 2014"}, {id:2,appointment:"Medical Officer",unit:"AFMED",department:"Clinical",startDate:"Jan 2015",endDate:"Dec 2018"}, {id:3,appointment:"Senior Medical Officer",unit:"82 Division",department:"Medical",startDate:"Jan 2019",endDate:"Aug 2022"} ], createdAt:"2024-04-01" },
+  { id:11, name:"Halima Bello Sani", rank:"Lieutenant", serviceNumber:"N/CPT/13201", course:"Supply and Transport Course", batch:"Batch 27", yearJoined:2016, status:"active", photo:'', currentDeployment:{ appointment:"Supply Officer", unit:"Army Logistic Command", department:"Supply and Transport", dateAssumed:"2023-03-15" }, coursesAttended:[ {id:1,courseName:"Young Officers Course",institution:"NAOS&TC",year:"2017"}, {id:2,courseName:"Supply and Transport Course",institution:"NAOS&TC",year:"2020"} ], deployments:[ {id:1,appointment:"S&T Platoon Commander",unit:"3 Division",department:"Logistics",startDate:"Jan 2016",endDate:"Dec 2019"}, {id:2,appointment:"S&T Officer",unit:"Army HQ",department:"Logistics",startDate:"Jan 2020",endDate:"Feb 2023"} ], createdAt:"2024-04-10" },
+  { id:12, name:"Tunde Adewale Fashola", rank:"Commander", serviceNumber:"N/LTC/8901", course:"Military Finance Course", batch:"Batch 14", yearJoined:2004, status:"active", photo:'', currentDeployment:{ appointment:"Chief Finance Officer", unit:"Army Finance Corps", department:"Finance", dateAssumed:"2022-11-01" }, coursesAttended:[ {id:1,courseName:"Young Officers Course",institution:"Army School of Finance",year:"2005"}, {id:2,courseName:"Military Finance Course",institution:"Army School of Finance",year:"2010"}, {id:3,courseName:"Junior Command Course",institution:"NASME, Minna",year:"2016"} ], deployments:[ {id:1,appointment:"Finance Officer",unit:"82 Division",department:"Finance",startDate:"Jan 2004",endDate:"Dec 2008"}, {id:2,appointment:"Senior Finance Officer",unit:"Army HQ",department:"Finance",startDate:"Jan 2009",endDate:"Dec 2013"}, {id:3,appointment:"SO1 Finance",unit:"DHQ",department:"Finance",startDate:"Jan 2014",endDate:"Dec 2018"}, {id:4,appointment:"Chief Finance Officer",unit:"Army Finance Corps",department:"Finance",startDate:"Jan 2019",endDate:"Oct 2022"} ], createdAt:"2024-04-15" }
+];
+
+const INITIAL_USERS = [
+  { id:1, username:'admin', password:'admin123', role:'admin', name:'System Administrator', lastLogin:'25 Jun 2026', status:'active' },
+  { id:2, username:'viewer', password:'viewer123', role:'viewer', name:'Capt. A. Bello', lastLogin:'24 Jun 2026', status:'active' },
+  { id:3, username:'viewer2', password:'view456', role:'viewer', name:'Lt. Col. C. Eze', lastLogin:'23 Jun 2026', status:'active' }
+];
+
+class Component extends DCLogic {
+  componentDidMount() {
+    // Responsive sidebar
+    const mobile = window.innerWidth < 900;
+    this.setState({ isMobile: mobile, sidebarCollapsed: mobile ? true : false });
+    this._resizeHandler = () => {
+      const isMob = window.innerWidth < 900;
+      this.setState(s => ({ isMobile: isMob, sidebarCollapsed: isMob ? true : s.sidebarCollapsed }));
+    };
+    window.addEventListener('resize', this._resizeHandler);
+
+    // Read hash — supports shared public links
+    const hash = window.location.hash;
+    if (hash === '#public') {
+      this.setState({ page: 'public' });
+    } else {
+      const m = hash.match(/^#public-(\d+)$/);
+      if (m) {
+        const id = parseInt(m[1]);
+        const staff = this.state.staffList.find(s => s.id === id);
+        if (staff) this.setState({ page: 'public', publicSelectedStaffId: id });
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    if (this._resizeHandler) window.removeEventListener('resize', this._resizeHandler);
+  }
+
+  state = {
+    page: 'login', currentUser: null, staffList: INITIAL_STAFF, users: INITIAL_USERS,
+    selectedStaffId: null, previousPage: 'directory',
+    searchQuery: '', publicSearchQuery: '', publicSelectedStaffId: null,
+    filters: { rank:'', course:'', yearJoined:'' }, sortBy: 'az',
+    formMode: 'add',
+    formData: { name:'', rank:'', serviceNumber:'', course:'', batch:'', coursesAttended:[], deployments:[], currentAppointment:'', currentUnit:'', currentDept:'', dateAssumed:'', photo:'' },
+    formError: '', loginError: '', notification: null, deleteConfirmId: null,
+    showAddUserModal: false, addUserForm: { username:'', password:'', role:'viewer', name:'' }, addUserError: '',
+    editUserModal: null, editUserError: '',
+    sidebarCollapsed: false, isMobile: false, shareModal: null,
+  };
+
+  getEmptyForm() {
+    return { name:'', rank:'', serviceNumber:'', course:'', batch:'', coursesAttended:[], deployments:[], currentAppointment:'', currentUnit:'', currentDept:'', dateAssumed:'', photo:'' };
+  }
+
+  getInitials(name) {
+    if (!name) return '?';
+    const p = name.trim().split(/\s+/);
+    if (p.length === 1) return p[0][0].toUpperCase();
+    return (p[0][0] + p[p.length > 2 ? 2 : 1][0]).toUpperCase();
+  }
+
+  getAvatarColor(name) {
+    const c = ['#162f72','#6d28d9','#0369a1','#0f766e','#b45309','#9f1239','#065f46','#162f72','#7c3aed','#0284c7','#92400e','#374151'];
+    return c[name ? name.charCodeAt(0) % c.length : 0];
+  }
+
+  getRankOrder(rank) { const i = RANKS.indexOf(rank); return i === -1 ? 999 : i; }
+
+  // 1×1 transparent GIF — safe placeholder when no photo uploaded
+  BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+  formatDate(d) {
+    if (!d) return '—';
+    try { return new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }); }
+    catch(e) { return d; }
+  }
+
+  getFilteredStaff() {
+    const { staffList, searchQuery, filters, sortBy } = this.state;
+    let list = staffList;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(s => s.name.toLowerCase().includes(q) || s.serviceNumber.toLowerCase().includes(q) || s.rank.toLowerCase().includes(q) || (s.course && s.course.toLowerCase().includes(q)) || (s.currentDeployment && s.currentDeployment.unit && s.currentDeployment.unit.toLowerCase().includes(q)));
+    }
+    if (filters.rank) list = list.filter(s => s.rank === filters.rank);
+    if (filters.course) list = list.filter(s => s.course === filters.course);
+    if (filters.yearJoined) list = list.filter(s => String(s.yearJoined) === filters.yearJoined);
+    if (sortBy === 'az') list = [...list].sort((a,b) => a.name.localeCompare(b.name));
+    else if (sortBy === 'rank') list = [...list].sort((a,b) => this.getRankOrder(a.rank) - this.getRankOrder(b.rank));
+    else if (sortBy === 'recent') list = [...list].sort((a,b) => b.createdAt.localeCompare(a.createdAt));
+    return list;
+  }
+
+  selectStaff = (id) => { this.setState({ selectedStaffId: id, previousPage: this.state.page, page: 'profile' }); }
+
+  handleEditClick = (id) => {
+    const s = this.state.staffList.find(x => x.id === id);
+    if (!s) return;
+    this.setState({ selectedStaffId: id, formMode: 'edit', formError: '', page: 'edit-staff',
+      formData: { name:s.name, rank:s.rank, serviceNumber:s.serviceNumber, course:s.course||'', batch:s.batch||'',
+        coursesAttended:(s.coursesAttended||[]).map(c=>({...c})), deployments:(s.deployments||[]).map(d=>({...d})),
+        currentAppointment:s.currentDeployment?s.currentDeployment.appointment:'', currentUnit:s.currentDeployment?s.currentDeployment.unit:'',
+        currentDept:s.currentDeployment?s.currentDeployment.department:'', dateAssumed:s.currentDeployment?s.currentDeployment.dateAssumed:'',
+        photo:s.photo||'' } });
+  }
+
+  confirmDelete = (id) => { this.setState({ deleteConfirmId: id }); }
+
+  executeDelete = () => {
+    const { deleteConfirmId, staffList } = this.state;
+    const name = (staffList.find(s => s.id === deleteConfirmId)||{}).name || 'Staff member';
+    this.setState(prev => ({ staffList: prev.staffList.filter(s => s.id !== deleteConfirmId), deleteConfirmId:null, page:'directory', selectedStaffId:null }));
+    this.showNotification('success', name + ' has been removed.');
+  }
+
+  showNotification(type, message) {
+    this.setState({ notification: { type, message } });
+    setTimeout(() => this.setState({ notification: null }), 3500);
+  }
+
+  handleLogin = (e) => {
+    e.preventDefault();
+    const el = e.target.elements;
+    const username = (el.namedItem('username')||{}).value ? el.namedItem('username').value.trim() : '';
+    const password = (el.namedItem('password')||{}).value || '';
+    const user = this.state.users.find(u => u.username === username && u.password === password);
+    if (user) { this.setState({ currentUser: user, page: 'dashboard', loginError: '' }); }
+    else { this.setState({ loginError: 'Invalid username or password. Please try again.' }); }
+  }
+
+  handleLogout = () => { this.setState({ currentUser:null, page:'login', searchQuery:'', filters:{rank:'',course:'',yearJoined:''}, selectedStaffId:null, publicSelectedStaffId:null, publicSearchQuery:'' }); }
+
+  handleFormInput = (e) => { const f = e.target.dataset.field; if (f) this.setState(s => ({ formData:{...s.formData,[f]:e.target.value}, formError:'' })); }
+
+  handleCourseInput = (e) => { const id=parseInt(e.target.dataset.id); const sub=e.target.dataset.subfield; const val=e.target.value; this.setState(s => ({ formData:{...s.formData, coursesAttended:s.formData.coursesAttended.map(c=>c.id===id?{...c,[sub]:val}:c)} })); }
+
+  handleDeploymentInput = (e) => { const id=parseInt(e.target.dataset.id); const sub=e.target.dataset.subfield; const val=e.target.value; this.setState(s => ({ formData:{...s.formData, deployments:s.formData.deployments.map(d=>d.id===id?{...d,[sub]:val}:d)} })); }
+
+  addCourseRow = () => { this.setState(s => ({ formData:{...s.formData, coursesAttended:[...s.formData.coursesAttended,{id:Date.now(),courseName:'',institution:'',year:''}]} })); }
+
+  addDeploymentRow = () => { this.setState(s => ({ formData:{...s.formData, deployments:[...s.formData.deployments,{id:Date.now(),appointment:'',unit:'',department:'',startDate:'',endDate:''}]} })); }
+
+  showShareModal(url, title) {
+    this.setState({ shareModal: { url, title } });
+    // Also try clipboard silently
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {}).catch(()=>{});
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = url; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+      }
+    } catch(e) {}
+  }
+
+  handleCopyPortalLink = () => {
+    const url = window.location.href.split('#')[0] + '#public';
+    this.showShareModal(url, 'Public Search Portal Link');
+  }
+
+  handleCopyShareLink = (staffId) => {
+    const url = window.location.href.split('#')[0] + '#public-' + staffId;
+    this.showShareModal(url, 'Public Profile Link');
+  }
+
+  handleCopyFromModal = () => {
+    const { shareModal } = this.state;
+    if (!shareModal) return;
+    // Most reliable cross-browser approach — works in sandboxed iframes
+    const el = document.getElementById('spms-share-url-input');
+    if (el) {
+      el.focus();
+      el.select();
+      el.setSelectionRange(0, 99999);
+    }
+    let copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) {}
+    if (!copied) {
+      try {
+        navigator.clipboard && navigator.clipboard.writeText(shareModal.url);
+        copied = true;
+      } catch(e) {}
+    }
+    this.showNotification('success', copied ? 'Link copied to clipboard!' : 'Press Ctrl+C / Cmd+C to copy the selected link.');
+    if (copied) setTimeout(() => this.setState({ shareModal: null }), 800);
+  }
+
+  handlePhotoUpload = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { this.setState(s => ({ formData:{...s.formData, photo:ev.target.result} })); };
+    reader.readAsDataURL(file);
+  }
+
+  handleFormSubmit = () => {
+    const { formData, formMode, selectedStaffId } = this.state;
+    if (!formData.name.trim()) { this.setState({ formError:'Full name is required.' }); return; }
+    if (!formData.rank) { this.setState({ formError:'Rank is required.' }); return; }
+    if (!formData.serviceNumber.trim()) { this.setState({ formError:'Service number is required.' }); return; }
+    if (formMode === 'add') {
+      const rec = { id:Date.now(), name:formData.name.trim(), rank:formData.rank, serviceNumber:formData.serviceNumber.trim(), course:formData.course.trim(), batch:formData.batch.trim(), yearJoined:new Date().getFullYear(), status:'active', photo:formData.photo||'', currentDeployment:{appointment:formData.currentAppointment.trim(),unit:formData.currentUnit.trim(),department:formData.currentDept.trim(),dateAssumed:formData.dateAssumed}, coursesAttended:formData.coursesAttended, deployments:formData.deployments, createdAt:new Date().toISOString().split('T')[0] };
+      this.setState(s => ({ staffList:[...s.staffList,rec], page:'directory', formError:'', formData:this.getEmptyForm() }));
+      this.showNotification('success', rec.name + ' added successfully.');
+    } else {
+      this.setState(s => ({ staffList:s.staffList.map(st=>st.id===selectedStaffId?{...st,name:formData.name.trim(),rank:formData.rank,serviceNumber:formData.serviceNumber.trim(),course:formData.course.trim(),batch:formData.batch.trim(),photo:formData.photo||st.photo||'',currentDeployment:{appointment:formData.currentAppointment.trim(),unit:formData.currentUnit.trim(),department:formData.currentDept.trim(),dateAssumed:formData.dateAssumed},coursesAttended:formData.coursesAttended,deployments:formData.deployments}:st), page:'profile', formError:'' }));
+      this.showNotification('success', 'Staff record updated successfully.');
+    }
+  }
+
+  openEditUser = (user) => {
+    this.setState({ editUserModal: { id: user.id, name: user.name, username: user.username, role: user.role, password: '' }, editUserError: '' });
+  }
+
+  handleEditUserInput = (e) => {
+    const f = e.target.dataset.field;
+    if (f) this.setState(s => ({ editUserModal: { ...s.editUserModal, [f]: e.target.value }, editUserError: '' }));
+  }
+
+  handleSaveEditUser = () => {
+    const { editUserModal, users } = this.state;
+    if (!editUserModal) return;
+    if (!editUserModal.name.trim()) { this.setState({ editUserError: 'Full name is required.' }); return; }
+    if (!editUserModal.username.trim()) { this.setState({ editUserError: 'Username is required.' }); return; }
+    if (users.some(u => u.username === editUserModal.username.trim() && u.id !== editUserModal.id)) {
+      this.setState({ editUserError: 'Username already taken.' }); return;
+    }
+    this.setState(s => ({
+      users: s.users.map(u => u.id === editUserModal.id ? {
+        ...u,
+        name: editUserModal.name.trim(),
+        username: editUserModal.username.trim(),
+        role: editUserModal.role,
+        ...(editUserModal.password.trim() ? { password: editUserModal.password.trim() } : {})
+      } : u),
+      editUserModal: null, editUserError: ''
+    }));
+    this.showNotification('success', 'User updated successfully.');
+  }
+
+  handleAddUser = () => {
+    const { addUserForm, users } = this.state;
+    if (!addUserForm.name.trim()) { this.setState({ addUserError:'Full name is required.' }); return; }
+    if (!addUserForm.username.trim()) { this.setState({ addUserError:'Username is required.' }); return; }
+    if (!addUserForm.password.trim()) { this.setState({ addUserError:'Password is required.' }); return; }
+    if (users.some(u => u.username === addUserForm.username.trim())) { this.setState({ addUserError:'Username already exists.' }); return; }
+    const u = { id:Date.now(), username:addUserForm.username.trim(), password:addUserForm.password.trim(), role:addUserForm.role, name:addUserForm.name.trim(), lastLogin:'Never', status:'active' };
+    this.setState(s => ({ users:[...s.users,u], showAddUserModal:false, addUserForm:{username:'',password:'',role:'viewer',name:''}, addUserError:'' }));
+    this.showNotification('success', 'User ' + u.username + ' created successfully.');
+  }
+
+  renderVals() {
+    const { page, currentUser, staffList, users, searchQuery, publicSearchQuery, publicSelectedStaffId, filters, sortBy, selectedStaffId, formData, formMode, loginError, notification, deleteConfirmId, showAddUserModal, addUserForm, addUserError } = this.state;
+    const isAdmin = !!(currentUser && currentUser.role === 'admin');
+    const isLoggedIn = !!currentUser;
+
+    const filteredStaff = this.getFilteredStaff();
+    const selectedStaff = selectedStaffId ? staffList.find(s => s.id === selectedStaffId) : null;
+
+    const totalCoursesCompleted = staffList.reduce((sum,s) => sum + (s.coursesAttended?s.coursesAttended.length:0), 0);
+    const activeDeployments = staffList.filter(s => s.status === 'active').length;
+    const now = new Date();
+    const thisMonthAdded = staffList.filter(s => { try { const d=new Date(s.createdAt); return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear(); } catch(e){return false;} }).length;
+    const todayDate = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }).toUpperCase();
+
+    const recentStaff = [...staffList].sort((a,b)=>b.createdAt.localeCompare(a.createdAt)).slice(0,5).map(s=>({...s, initials:this.getInitials(s.name), avatarColor:this.getAvatarColor(s.name), currentUnit:s.currentDeployment?s.currentDeployment.unit:'—', onSelect:()=>this.selectStaff(s.id)}));
+
+    const staffWithDisplay = filteredStaff.map(s=>({...s, initials:this.getInitials(s.name), avatarColor:this.getAvatarColor(s.name), currentUnit:s.currentDeployment?s.currentDeployment.unit:'—', onSelect:()=>this.selectStaff(s.id), onEdit:()=>this.handleEditClick(s.id), onDelete:()=>this.confirmDelete(s.id)}));
+
+    const profileLast5 = selectedStaff?[...(selectedStaff.deployments||[])].slice(-5).reverse().map((d,i)=>({...d,number:i+1,endLabel:d.endDate||'Present'})):[];
+    const profileCourses = selectedStaff?(selectedStaff.coursesAttended||[]):[];
+    const hasCurrentDep = !!(selectedStaff&&selectedStaff.currentDeployment&&selectedStaff.currentDeployment.appointment);
+    const profileCurrentDep = selectedStaff&&selectedStaff.currentDeployment?selectedStaff.currentDeployment:{};
+    const profileCurrentDepDate = selectedStaff&&selectedStaff.currentDeployment?this.formatDate(selectedStaff.currentDeployment.dateAssumed):'—';
+
+    const uniqueRanks = [...new Set(staffList.map(s=>s.rank))].sort();
+    const uniqueCourses = [...new Set(staffList.map(s=>s.course).filter(Boolean))].sort();
+
+    // Nav active styles (Kinetic Enterprise: white sidebar, blue accents)
+    const ns = (p) => ({
+      bg: page===p?'#eef2fa':'transparent',
+      color: page===p?'#1e3a8a':'#475569',
+      fw: page===p?'600':'500',
+      br: page===p?'2px solid #1e3a8a':'2px solid transparent',
+    });
+    const nd=ns('dashboard'), ndir=ns('directory'), nadd=ns('add-staff'), nuser=ns('user-management'), nexp=ns('export');
+
+    // Top bar tab states
+    const tabPages = { dir:['directory','profile','add-staff','edit-staff'], dash:['dashboard'], admin:['user-management','export'] };
+    const tColor = (pages) => pages.includes(page)?'#1e3a8a':'#64748b';
+    const tBorder = (pages) => pages.includes(page)?'2px solid #1e3a8a':'2px solid transparent';
+    const tFw = (pages) => pages.includes(page)?'600':'500';
+
+    // System activity
+    const systemActivity = [
+      { dot:'#16a34a', title:'Promotion Approved', desc:'Record updated successfully.', time:'10:45 AM' },
+      { dot:'#1e3a8a', title:'New Staff Added', desc:'New entry created in registry.', time:'09:12 AM' },
+      { dot:'#ef4444', title:'Deployment Update', desc:'Deployment status changed.', time:'08:00 AM' },
+      { dot:'#94a3b8', title:'Audit Exported', desc:'Quarterly summary generated.', time:'YESTERDAY' },
+    ];
+
+    const formCoursesAttended = formData.coursesAttended.map(c=>({...c, onRemove:()=>this.setState(s=>({formData:{...s.formData,coursesAttended:s.formData.coursesAttended.filter(x=>x.id!==c.id)}}))}));
+    const formDeployments = formData.deployments.map(d=>({...d, onRemove:()=>this.setState(s=>({formData:{...s.formData,deployments:s.formData.deployments.filter(x=>x.id!==d.id)}}))}));
+
+    const usersWithDisplay = users.map(u=>({...u, initials:this.getInitials(u.name), avatarColor:this.getAvatarColor(u.name), roleDisplay:u.role==='admin'?'Administrator':'Viewer', roleBg:u.role==='admin'?'#dde8f5':'#dcfce7', roleColor:u.role==='admin'?'#162f72':'#166534', canDelete:u.id!==1&&(!currentUser||u.id!==currentUser.id), onEdit:()=>this.openEditUser(u), onDelete:()=>{ this.setState(s=>({users:s.users.filter(x=>x.id!==u.id)})); this.showNotification('success',u.username+' removed.'); }}));
+
+    const pubQ = publicSearchQuery;
+    const imgStyle = { width:'100%', height:'100%', objectFit:'cover', display:'block', position:'absolute', inset:0 };
+    const publicFilteredStaff = pubQ.length>=2 ? staffList.filter(s=>{const q=pubQ.toLowerCase();return s.name.toLowerCase().includes(q)||s.serviceNumber.toLowerCase().includes(q)||s.rank.toLowerCase().includes(q)||(s.batch&&s.batch.toLowerCase().includes(q))||(s.course&&s.course.toLowerCase().includes(q));}).map(s=>({...s,initials:this.getInitials(s.name),avatarColor:this.getAvatarColor(s.name),currentUnit:s.currentDeployment?s.currentDeployment.unit:'—',hasPhoto:!!(s.photo),noPhoto:!(s.photo),photoEl:s.photo?React.createElement('img',{src:s.photo,style:imgStyle,alt:'Photo'}):null,onSelect:()=>this.setState({publicSelectedStaffId:s.id})})) : [];
+    const publicSelectedStaff = publicSelectedStaffId?staffList.find(s=>s.id===publicSelectedStaffId):null;
+    const publicProfileCourses = publicSelectedStaff?(publicSelectedStaff.coursesAttended||[]):[];
+    const publicProfileLast5 = publicSelectedStaff?[...(publicSelectedStaff.deployments||[])].slice(-5).reverse().map((d,i)=>({...d,number:i+1,endLabel:d.endDate||'Present'})):[];
+    const hasPublicCurrentDep = !!(publicSelectedStaff&&publicSelectedStaff.currentDeployment&&publicSelectedStaff.currentDeployment.appointment);
+
+    return {
+      // Routing
+      isLoginPage: !isLoggedIn && page!=='public',
+      isPublicPortal: page==='public',
+      isMainApp: isLoggedIn && page!=='public',
+      isAdmin,
+      isDashboard: isLoggedIn&&page==='dashboard',
+      isDirectory: isLoggedIn&&page==='directory',
+      isProfile: isLoggedIn&&page==='profile',
+      showStaffForm: isLoggedIn&&(page==='add-staff'||page==='edit-staff'),
+      isUserMgmt: isLoggedIn&&page==='user-management'&&isAdmin,
+      isExport: isLoggedIn&&page==='export'&&isAdmin,
+      hasProfile: !!selectedStaff,
+      noStaffFound: filteredStaff.length===0,
+
+      // User
+      currentUserName: currentUser?currentUser.name:'',
+      currentUserRole: currentUser?(currentUser.role==='admin'?'Administrator':'Viewer'):'',
+      currentUserInitials: currentUser?this.getInitials(currentUser.name):'',
+      todayDate,
+
+      // Sidebar nav styles
+      navDashBg:nd.bg, navDashColor:nd.color, navDashFw:nd.fw, navDashBorderRight:nd.br,
+      navDirBg:ndir.bg, navDirColor:ndir.color, navDirFw:ndir.fw, navDirBorderRight:ndir.br,
+      navAddBg:nadd.bg, navAddColor:nadd.color, navAddFw:nadd.fw, navAddBorderRight:nadd.br,
+      navUserBg:nuser.bg, navUserColor:nuser.color, navUserFw:nuser.fw, navUserBorderRight:nuser.br,
+      navExportBg:nexp.bg, navExportColor:nexp.color, navExportFw:nexp.fw, navExportBorderRight:nexp.br,
+
+      // Top bar tabs
+      tabDirColor:tColor(tabPages.dir), tabDirBorder:tBorder(tabPages.dir), tabDirFw:tFw(tabPages.dir),
+      tabDashColor:tColor(tabPages.dash), tabDashBorder:tBorder(tabPages.dash), tabDashFw:tFw(tabPages.dash),
+      tabAdminColor:tColor(tabPages.admin), tabAdminBorder:tBorder(tabPages.admin), tabAdminFw:tFw(tabPages.admin),
+
+      // Dashboard data
+      totalStaff:staffList.length, totalCoursesCompleted, activeDeployments, thisMonthAdded,
+      recentStaff, systemActivity,
+
+      // Directory
+      staffWithDisplay, staffCount:filteredStaff.length, searchQuery,
+      filterRank:filters.rank, filterCourse:filters.course, sortBy,
+      rankFilterOptions:[{v:'',l:'All Ranks'},...uniqueRanks.map(r=>({v:r,l:r}))],
+      courseFilterOptions:[{v:'',l:'Any Course'},...uniqueCourses.map(c=>({v:c,l:c}))],
+
+      // Profile
+      selectedStaff, profileInitials:selectedStaff?this.getInitials(selectedStaff.name):'',
+      profileAvatarColor:selectedStaff?this.getAvatarColor(selectedStaff.name):'#162f72',
+      hasProfilePhoto:!!(selectedStaff&&selectedStaff.photo),
+      noProfilePhoto:!(selectedStaff&&selectedStaff.photo),
+      profilePhotoEl:selectedStaff&&selectedStaff.photo?React.createElement('img',{src:selectedStaff.photo,style:imgStyle,alt:'Profile'}):null,
+      profileCourses, profileLast5, hasCurrentDep, profileCurrentDep, profileCurrentDepDate,
+      profileOnBack:()=>this.setState({page:this.state.previousPage||'directory'}),
+      profileOnEdit:isAdmin&&selectedStaff?()=>this.handleEditClick(selectedStaff.id):null,
+      profileOnDelete:isAdmin&&selectedStaff?()=>this.confirmDelete(selectedStaff.id):null,
+      profileOnShare:selectedStaff?()=>this.handleCopyShareLink(selectedStaff.id):null,
+      handlePrint:()=>window.print(),
+
+      // Form
+      formTitle:formMode==='add'?'Register New Personnel':'Edit Personnel Record',
+      formSubmitLabel:formMode==='add'?'Save Personnel Record':'Save Changes',
+      formName:formData.name, formRank:formData.rank, formServiceNumber:formData.serviceNumber,
+      formCourse:formData.course, formBatch:formData.batch,
+      formCurrentAppointment:formData.currentAppointment, formCurrentUnit:formData.currentUnit,
+      formCurrentDept:formData.currentDept, formDateAssumed:formData.dateAssumed,
+      hasFormPhoto:!!(formData.photo), noFormPhoto:!(formData.photo),
+      formPhotoEl:formData.photo?React.createElement('img',{src:formData.photo,style:imgStyle,alt:'Photo'}):null,
+      formCoursesAttended, formDeployments, formError:this.state.formError,
+      hasCourseRows:formData.coursesAttended.length>0, noCourseRows:formData.coursesAttended.length===0,
+      hasDeploymentRows:formData.deployments.length>0, noDeploymentRows:formData.deployments.length===0,
+      rankOptions:RANKS.map(r=>({v:r,l:r})),
+      handleFormInput:this.handleFormInput, handleCourseInput:this.handleCourseInput,
+      handleDeploymentInput:this.handleDeploymentInput, addCourseRow:this.addCourseRow,
+      addDeploymentRow:this.addDeploymentRow, handlePhotoUpload:this.handlePhotoUpload,
+      handleFormSubmit:this.handleFormSubmit, handleFormCancel:()=>this.setState({page:'directory'}),
+
+      // Nav handlers
+      handleCopyPortalLink: this.handleCopyPortalLink,
+      toggleSidebar: () => this.setState(s => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+      sidebarCollapsed: this.state.sidebarCollapsed,
+      isMobile: this.state.isMobile,
+      // On mobile: sidebar overlays (absolute), collapsed = hidden (width 0), open = 240px
+      // On desktop: sidebar is static, collapsed = 64px, open = 240px
+      sidebarWidth: this.state.isMobile
+        ? (this.state.sidebarCollapsed ? '0px' : '240px')
+        : (this.state.sidebarCollapsed ? '64px' : '240px'),
+      sidebarPosition: this.state.isMobile ? 'absolute' : 'relative',
+      showMobileOverlay: this.state.isMobile && !this.state.sidebarCollapsed,
+      showSidebarText: !this.state.sidebarCollapsed,
+      // Edit user modal
+      showEditUserModal: !!(this.state.editUserModal),
+      editUserFormName: this.state.editUserModal ? this.state.editUserModal.name : '',
+      editUserFormUsername: this.state.editUserModal ? this.state.editUserModal.username : '',
+      editUserFormRole: this.state.editUserModal ? this.state.editUserModal.role : 'viewer',
+      editUserFormPassword: '',
+      editUserError: this.state.editUserError,
+      handleEditUserInput: this.handleEditUserInput,
+      handleSaveEditUser: this.handleSaveEditUser,
+      closeEditUserModal: () => this.setState({ editUserModal: null }),
+      // Share modal
+      shareModal: this.state.shareModal,
+      showShareModal: !!this.state.shareModal,
+      shareModalTitle: this.state.shareModal ? this.state.shareModal.title : '',
+      shareModalUrl: this.state.shareModal ? this.state.shareModal.url : '',
+      closeShareModal: () => this.setState({ shareModal: null }),
+      handleCopyFromModal: this.handleCopyFromModal,
+      selectShareUrl: () => { const el = document.getElementById('spms-share-url-input'); if (el) { el.focus(); el.select(); el.setSelectionRange(0, 99999); } },
+      navToDashboard:()=>this.setState({page:'dashboard'}),
+      navToDirectory:()=>this.setState({page:'directory'}),
+      navToAddStaff:()=>this.setState({formMode:'add',formData:this.getEmptyForm(),formError:'',page:'add-staff'}),
+      navToUserMgmt:()=>this.setState({page:'user-management'}),
+      navToExport:()=>this.setState({page:'export'}),
+      navToPublic:()=>this.setState({page:'public'}),
+
+      // Auth
+      handleLogin:this.handleLogin, handleLogout:this.handleLogout, loginError,
+      goToPublicFromLogin:()=>this.setState({page:'public'}),
+
+      // Search
+      handleSearch:(e)=>this.setState({searchQuery:e.target.value}),
+      handleFilterRank:(e)=>this.setState(s=>({filters:{...s.filters,rank:e.target.value}})),
+      handleFilterCourse:(e)=>this.setState(s=>({filters:{...s.filters,course:e.target.value}})),
+      handleSortChange:(e)=>this.setState({sortBy:e.target.value}),
+      clearFilters:()=>this.setState({searchQuery:'',filters:{rank:'',course:'',yearJoined:''},sortBy:'az'}),
+
+      // Users
+      usersWithDisplay, showAddUserModal,
+      openAddUserModal:()=>this.setState({showAddUserModal:true,addUserError:'',addUserForm:{username:'',password:'',role:'viewer',name:''}}),
+      closeAddUserModal:()=>this.setState({showAddUserModal:false}),
+      handleAddUser:this.handleAddUser,
+      addUserFormName:addUserForm.name, addUserFormUsername:addUserForm.username, addUserFormRole:addUserForm.role,
+      handleAddUserInput:(e)=>{ const f=e.target.dataset.field; if(f) this.setState(s=>({addUserForm:{...s.addUserForm,[f]:e.target.value}})); },
+      addUserError,
+
+      // Delete modal
+      showDeleteModal:!!deleteConfirmId,
+      deleteConfirmName:deleteConfirmId?((staffList.find(s=>s.id===deleteConfirmId)||{}).name||''):'',
+      confirmDeleteFn:this.executeDelete, cancelDelete:()=>this.setState({deleteConfirmId:null}),
+
+      // Notification
+      showNotification:!!notification, notificationMsg:notification?notification.message:'',
+      notificationBg:notification&&notification.type==='success'?'#16a34a':'#ef4444',
+
+      // Export
+      handleExportPDF:()=>this.showNotification('success','PDF report export initiated.'),
+      handleExportExcel:()=>this.showNotification('success','Excel export initiated.'),
+      handleExportCSV:()=>this.showNotification('success','CSV data export initiated.'),
+
+      // Public portal
+      publicSearchQuery, handlePublicSearch:(e)=>this.setState({publicSearchQuery:e.target.value}),
+      publicFilteredStaff,
+      showPublicResultsList:pubQ.length>=2&&publicFilteredStaff.length>0&&!publicSelectedStaffId,
+      showPublicResults:pubQ.length>=2,
+      publicNoResults:pubQ.length>=2&&publicFilteredStaff.length===0&&!publicSelectedStaffId,
+      hasPublicProfile:!!publicSelectedStaff, publicSelectedStaff:publicSelectedStaff||{},
+      publicProfileInitials:publicSelectedStaff?this.getInitials(publicSelectedStaff.name):'',
+      publicProfileColor:publicSelectedStaff?this.getAvatarColor(publicSelectedStaff.name):'#1e3a8a',
+      hasPublicPhoto:!!(publicSelectedStaff&&publicSelectedStaff.photo),
+      noPublicPhoto:!(publicSelectedStaff&&publicSelectedStaff.photo),
+      publicProfilePhotoEl:publicSelectedStaff&&publicSelectedStaff.photo?React.createElement('img',{src:publicSelectedStaff.photo,style:imgStyle,alt:'Passport photo'}):null,
+      publicResultsCount:publicFilteredStaff.length,
+      publicProfileCourses, publicProfileLast5, hasPublicCurrentDep,
+      publicProfileCurrentDep:publicSelectedStaff&&publicSelectedStaff.currentDeployment?publicSelectedStaff.currentDeployment:{},
+      publicProfileCurrentDepDate:publicSelectedStaff&&publicSelectedStaff.currentDeployment?this.formatDate(publicSelectedStaff.currentDeployment.dateAssumed):'—',
+      clearPublicProfile:()=>this.setState({publicSelectedStaffId:null}),
+      navBackFromPublic:()=>this.setState({page:isLoggedIn?'dashboard':'login'}),
+    };
+  }
+}
+</script>
+</body>
+</html>

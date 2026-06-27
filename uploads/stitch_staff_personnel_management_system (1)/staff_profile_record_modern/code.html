@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Staff Personnel Management System - Personnel Record</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "status-alert": "#991B1B",
+                    "secondary-container": "#d5e3fd",
+                    "secondary": "#515f74",
+                    "surface-variant": "#e0e3e5",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-low": "#f2f4f6",
+                    "on-secondary-fixed-variant": "#3a485c",
+                    "slate-muted": "#64748B",
+                    "tertiary-container": "#001d31",
+                    "on-secondary-container": "#57657b",
+                    "on-primary-container": "#7c839b",
+                    "tertiary-fixed": "#cce5ff",
+                    "primary": "#000000",
+                    "on-tertiary-fixed": "#001d31",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-fixed": "#d5e3fd",
+                    "inverse-on-surface": "#eff1f3",
+                    "border-subtle": "#E2E8F0",
+                    "primary-fixed": "#dae2fd",
+                    "surface-container": "#eceef0",
+                    "on-tertiary-fixed-variant": "#004b73",
+                    "tertiary": "#000000",
+                    "surface": "#f7f9fb",
+                    "background": "#f7f9fb",
+                    "surface-tint": "#565e74",
+                    "surface-container-high": "#e6e8ea",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#0d1c2f",
+                    "on-surface-variant": "#45464d",
+                    "inverse-surface": "#2d3133",
+                    "primary-fixed-dim": "#bec6e0",
+                    "tertiary-fixed-dim": "#93ccff",
+                    "error-container": "#ffdad6",
+                    "official-navy": "#0F172A",
+                    "status-active": "#166534",
+                    "on-tertiary-container": "#188ace",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#b9c7e0",
+                    "outline-variant": "#c6c6cd",
+                    "on-surface": "#191c1e",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#e0e3e5",
+                    "outline": "#76777d",
+                    "on-background": "#191c1e",
+                    "inverse-primary": "#bec6e0",
+                    "primary-container": "#131b2e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "max-width-content": "1280px",
+                    "gutter": "24px",
+                    "base": "4px",
+                    "margin-page": "32px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "data-mono": ["JetBrains Mono"],
+                    "headline-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "data-mono": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-sm": ["18px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-sm": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-bold": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+            .print-border { border: 1px solid #E2E8F0 !important; }
+            .shadow-none { box-shadow: none !important; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .kinetic-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+        .kinetic-table tr:hover {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="no-print bg-white border-b border-border-subtle sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-page max-w-max-width-content mx-auto h-16">
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-on-tertiary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl">dataset</span>
+</div>
+<span class="font-bold text-xl tracking-tight text-official-navy">SPMS</span>
+</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-sm font-medium text-slate-muted hover:text-official-navy transition-colors" href="#">Directory</a>
+<a class="text-sm font-semibold text-on-tertiary-container border-b-2 border-on-tertiary-container h-16 flex items-center" href="#">Personnel</a>
+<a class="text-sm font-medium text-slate-muted hover:text-official-navy transition-colors" href="#">Operations</a>
+<a class="text-sm font-medium text-slate-muted hover:text-official-navy transition-colors" href="#">Reporting</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-on-tertiary-container text-white px-4 py-2 text-sm font-semibold rounded-xl hover:bg-on-tertiary-container/90 transition-all shadow-sm">
+                Add Staff
+            </button>
+<div class="flex items-center gap-1 border-l border-border-subtle pl-4 ml-2">
+<button class="text-slate-muted hover:bg-surface-container p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-border-subtle">
+<img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC6JZywmUBqvekPZvRgL8XI6u21_Go1uCEm6oFhC377OlX55OB22zmiHABLV-xtHxpUg8inZOYwisunpB2-dA-8HsOfaUNp6NjLPFBSNcZPkxDUXlgowKwRioOqhWiLPAqMRJOWmsCJpmnZQ_KSe8mI2cOshmexDXo4fBkp7hg0fOPqWP3exZH1Zv1hdO9cBKewO7C98wG9Iocl3FKdBEfRiZ0bZcI9gHasYFb5_vdXlpcXn3u5LaRn8VQHcgBd5r-xYqmnFpCkzE"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 max-w-max-width-content mx-auto w-full">
+<!-- SideNavBar -->
+<aside class="no-print hidden lg:flex flex-col w-64 pt-8 pr-6 border-r border-border-subtle">
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-surface-container text-on-tertiary-container font-semibold transition-all" href="#">
+<span class="material-symbols-outlined text-[22px]">person_search</span>
+<span class="text-sm">Profile Search</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-secondary hover:bg-surface-container/50 transition-all" href="#">
+<span class="material-symbols-outlined text-[22px]">analytics</span>
+<span class="text-sm">Statistics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-secondary hover:bg-surface-container/50 transition-all" href="#">
+<span class="material-symbols-outlined text-[22px]">folder_shared</span>
+<span class="text-sm">Service Records</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-secondary hover:bg-surface-container/50 transition-all" href="#">
+<span class="material-symbols-outlined text-[22px]">military_tech</span>
+<span class="text-sm">Promotions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-secondary hover:bg-surface-container/50 transition-all" href="#">
+<span class="material-symbols-outlined text-[22px]">verified_user</span>
+<span class="text-sm">Audit Trail</span>
+</a>
+</nav>
+<div class="mt-auto pb-8 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-secondary hover:bg-surface-container/50 transition-all" href="#">
+<span class="material-symbols-outlined text-[22px]">help_center</span>
+<span class="text-sm">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-secondary hover:bg-surface-container/50 transition-all" href="#">
+<span class="material-symbols-outlined text-[22px]">logout</span>
+<span class="text-sm">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-margin-mobile md:p-8">
+<!-- Header Controls -->
+<div class="no-print flex justify-between items-center mb-8">
+<nav class="flex items-center gap-2 text-xs font-semibold text-slate-muted uppercase tracking-wider">
+<a class="hover:text-official-navy" href="#">Personnel</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-official-navy">Profile Detail</span>
+</nav>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border border-border-subtle bg-white hover:border-on-tertiary-container/30 transition-all rounded-xl shadow-sm text-sm font-semibold text-official-navy" onclick="window.print()">
+<span class="material-symbols-outlined text-lg">print</span>
+                    Print Record
+                </button>
+<button class="bg-on-tertiary-container text-white px-5 py-2 rounded-xl text-sm font-semibold hover:opacity-90 shadow-sm transition-all">
+                    Edit Profile
+                </button>
+</div>
+</div>
+<!-- SaaS Profile Header -->
+<div class="kinetic-card overflow-hidden mb-8 border-none ring-1 ring-border-subtle">
+<div class="bg-official-navy h-32 relative">
+<!-- Abstract decorative element -->
+<div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-400 to-transparent"></div>
+</div>
+<div class="px-8 pb-8 flex flex-col md:flex-row items-start md:items-end gap-6 -mt-12">
+<div class="relative">
+<div class="w-32 h-32 rounded-2xl border-4 border-white overflow-hidden shadow-lg bg-surface-container">
+<img alt="Elias Vance" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFa1KsLFVQygKb3ytoaKAO3AijL1HOvKv3_hKJB1Vs83kO21RxRdRpvlOMmet1H_8BgVy9gJZ2qcCi-wtIq4QTpRtcSA1MkYAd4pUvm4UNHdovCuSE8in_iiG8ggwpYQU0RmAfWM4W0ry88PnPvz0Rv12R_5jR5nh5jpxmL-nkn0da_oTBbpGGJ9tKWUvY7BErjs83BiPet2B8A9LBnjsOyQQ1-YZqp6AkzH96Zfr1YFHZPsRstmSfFt-x5MwQrMjnXlhAeSuYmwM"/>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex flex-wrap items-center gap-3 mb-2">
+<h1 class="text-3xl font-bold text-official-navy tracking-tight">Elias Vance</h1>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full ring-1 ring-green-600/20">
+<span class="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse"></span>
+                            ACTIVE DUTY
+                        </span>
+</div>
+<div class="flex flex-wrap items-center gap-y-2 gap-x-6">
+<p class="text-slate-muted font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">military_tech</span>
+                            Commander (O-5)
+                        </p>
+<p class="text-slate-muted font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">tag</span>
+                            SPMS-7729-DELTA
+                        </p>
+<p class="text-slate-muted font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+                            Verified 12 Oct 2024
+                        </p>
+</div>
+</div>
+<div class="flex gap-2">
+<span class="inline-flex items-center gap-1.5 px-4 py-2 bg-red-50 text-red-700 text-xs font-bold rounded-xl ring-1 ring-red-600/20">
+<span class="material-symbols-outlined text-lg">verified_user</span>
+                        TOP SECRET (L4)
+                    </span>
+</div>
+</div>
+</div>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Information Column -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Current Appointment -->
+<div class="kinetic-card p-6 border-l-4 border-on-tertiary-container">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-2xl">work</span>
+</div>
+<div>
+<h2 class="text-xs font-bold text-slate-muted uppercase tracking-widest">Current Appointment</h2>
+<h3 class="text-lg font-bold text-official-navy">Director of Strategic Logistics, Central Command</h3>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-8 pt-4 border-t border-border-subtle/50">
+<div>
+<span class="block text-[11px] font-bold text-slate-muted uppercase mb-1">Effective Since</span>
+<span class="text-sm font-semibold text-official-navy">01 January 2023</span>
+</div>
+<div>
+<span class="block text-[11px] font-bold text-slate-muted uppercase mb-1">Location</span>
+<span class="text-sm font-semibold text-official-navy">HQ Sector 7-G</span>
+</div>
+</div>
+</div>
+<!-- Bento Info Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Personal Info -->
+<div class="kinetic-card p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-bold text-official-navy">Personal Details</h3>
+<span class="material-symbols-outlined text-slate-muted text-xl">contact_page</span>
+</div>
+<dl class="space-y-4">
+<div class="flex justify-between items-center py-2 border-b border-border-subtle/30">
+<dt class="text-xs font-medium text-slate-muted uppercase">Full Name</dt>
+<dd class="text-sm font-semibold text-official-navy">Elias Nathaniel Vance</dd>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-border-subtle/30">
+<dt class="text-xs font-medium text-slate-muted uppercase">Date of Birth</dt>
+<dd class="text-sm font-semibold text-official-navy">15 May 1982</dd>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-border-subtle/30">
+<dt class="text-xs font-medium text-slate-muted uppercase">Blood Type</dt>
+<dd class="text-sm font-bold text-red-600">O+</dd>
+</div>
+<div class="flex justify-between items-center py-2">
+<dt class="text-xs font-medium text-slate-muted uppercase">Languages</dt>
+<dd class="text-sm font-semibold text-official-navy">EN, FR, RU</dd>
+</div>
+</dl>
+</div>
+<!-- Courses -->
+<div class="kinetic-card p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-bold text-official-navy">Key Qualifications</h3>
+<span class="material-symbols-outlined text-slate-muted text-xl">history_edu</span>
+</div>
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<div class="mt-0.5 text-on-tertiary-container">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+</div>
+<div>
+<p class="text-sm font-bold text-official-navy">Command &amp; Staff Course</p>
+<p class="text-xs text-slate-muted">War College, 2021</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<div class="mt-0.5 text-on-tertiary-container">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+</div>
+<div>
+<p class="text-sm font-bold text-official-navy">Cyber Defense Integration</p>
+<p class="text-xs text-slate-muted">Tech Div, 2019</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<div class="mt-0.5 text-on-tertiary-container">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+</div>
+<div>
+<p class="text-sm font-bold text-official-navy">Logistical Forecasting</p>
+<p class="text-xs text-slate-muted">Institute of Admin, 2018</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<!-- Deployment Table -->
+<div class="kinetic-card overflow-hidden">
+<div class="p-6 border-b border-border-subtle flex items-center justify-between">
+<h3 class="font-bold text-official-navy">Deployment History</h3>
+<span class="text-xs font-semibold text-slate-muted uppercase">Recent Activities</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left kinetic-table">
+<thead class="bg-surface-container-low text-slate-muted font-bold text-[11px] uppercase tracking-wider">
+<tr>
+<th class="px-6 py-3">Operation</th>
+<th class="px-6 py-3">Location</th>
+<th class="px-6 py-3">Period</th>
+<th class="px-6 py-3">Role</th>
+</tr>
+</thead>
+<tbody class="text-sm text-official-navy divide-y divide-border-subtle/30">
+<tr>
+<td class="px-6 py-4 font-semibold">Northern Shield</td>
+<td class="px-6 py-4">Scandinavia</td>
+<td class="px-6 py-4 text-slate-muted">2021-22</td>
+<td class="px-6 py-4">Liaison</td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-semibold">7th Fleet Admin</td>
+<td class="px-6 py-4">Pacific Waters</td>
+<td class="px-6 py-4 text-slate-muted">2019-21</td>
+<td class="px-6 py-4">Chief Registrar</td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-semibold">JTF Zephyr</td>
+<td class="px-6 py-4">N. Africa</td>
+<td class="px-6 py-4 text-slate-muted">2017-19</td>
+<td class="px-6 py-4">Support</td>
+</tr>
+<tr>
+<td class="px-6 py-4 font-semibold">Base Command 12</td>
+<td class="px-6 py-4">Domestic HQ</td>
+<td class="px-6 py-4 text-slate-muted">2015-17</td>
+<td class="px-6 py-4">Duty Officer</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Side Information Card -->
+<div class="space-y-6">
+<!-- Administrative Status -->
+<div class="kinetic-card p-6">
+<h3 class="text-xs font-bold text-slate-muted uppercase tracking-widest mb-4">Registry Status</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low border border-border-subtle">
+<span class="material-symbols-outlined text-green-600">verified</span>
+<div class="text-sm">
+<p class="font-bold text-official-navy">Record Verified</p>
+<p class="text-xs text-slate-muted">Last sync: Oct 15, 2024</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low border border-border-subtle">
+<span class="material-symbols-outlined text-on-tertiary-container">history</span>
+<div class="text-sm">
+<p class="font-bold text-official-navy">Next Review</p>
+<p class="text-xs text-slate-muted">Scheduled Jan 2025</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Print Proof Signature (Simulated) -->
+<div class="kinetic-card p-6 bg-slate-50/50 border-dashed border-2 border-border-subtle text-center">
+<p class="text-xs font-bold text-slate-muted uppercase mb-2">Digital Signature Verification</p>
+<div class="py-4 font-data-mono text-[10px] text-slate-muted break-all opacity-60">
+                        8824-001-ELIAS-VANCE-AUTH-0XA4F2...
+                    </div>
+<div class="flex justify-center items-center gap-1 text-on-tertiary-container font-semibold text-xs">
+<span class="material-symbols-outlined text-sm">lock</span>
+                        Authenticated Content
+                    </div>
+</div>
+<div class="p-4 rounded-xl bg-on-tertiary-container/5 border border-on-tertiary-container/10">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-tertiary-container mt-0.5">info</span>
+<p class="text-xs text-on-tertiary-container font-medium leading-relaxed">
+                            This is an official digital personnel record. Any unauthorized modification is strictly prohibited and subject to system audit protocols.
+                        </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Signature/Footer block for print -->
+<div class="mt-16 pt-8 border-t border-border-subtle flex flex-col md:flex-row justify-between items-end gap-10 opacity-70">
+<div class="flex-1 w-full max-w-xs">
+<div class="border-b border-official-navy pb-1 mb-2 h-10 flex items-end">
+<span class="font-data-mono text-[10px] text-slate-muted">DIGITALLY SIGNED</span>
+</div>
+<p class="text-[10px] font-bold text-slate-muted uppercase">Registry Officer Authority</p>
+</div>
+<div class="flex-1 w-full max-w-xs text-right">
+<div class="border-b border-official-navy pb-1 mb-2 h-10 flex items-end justify-end">
+<span class="font-data-mono text-[10px] text-slate-muted">ACKNOWLEDGED 15 OCT 2024</span>
+</div>
+<p class="text-[10px] font-bold text-slate-muted uppercase">Subject Signature</p>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="no-print bg-white w-full py-8 px-margin-page mt-auto border-t border-border-subtle">
+<div class="max-w-max-width-content mx-auto flex flex-col md:flex-row justify-between items-center text-sm">
+<div class="flex flex-col items-center md:items-start gap-1">
+<span class="font-bold text-official-navy">SPMS Platform</span>
+<p class="text-slate-muted">© 2024 Institutional Registry Division. All Rights Reserved.</p>
+</div>
+<div class="flex gap-6 mt-4 md:mt-0 text-slate-muted font-medium">
+<a class="hover:text-on-tertiary-container transition-colors" href="#">Security</a>
+<a class="hover:text-on-tertiary-container transition-colors" href="#">Privacy</a>
+<a class="hover:text-on-tertiary-container transition-colors" href="#">Legal</a>
+<a class="hover:text-on-tertiary-container transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+<script>
+    // Subtle interactivity for modern feel
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('mousedown', () => btn.classList.add('scale-95'));
+        btn.addEventListener('mouseup', () => btn.classList.remove('scale-95'));
+        btn.addEventListener('mouseleave', () => btn.classList.remove('scale-95'));
+    });
+</script>
+</body></html>

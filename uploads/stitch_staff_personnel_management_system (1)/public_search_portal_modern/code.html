@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SPMS | Public Search Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "status-alert": "#991B1B",
+                    "secondary-container": "#d5e3fd",
+                    "secondary": "#515f74",
+                    "surface-variant": "#e0e3e5",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-low": "#f2f4f6",
+                    "on-secondary-fixed-variant": "#3a485c",
+                    "slate-muted": "#64748B",
+                    "tertiary-container": "#001d31",
+                    "on-secondary-container": "#57657b",
+                    "on-primary-container": "#7c839b",
+                    "tertiary-fixed": "#cce5ff",
+                    "primary": "#000000",
+                    "on-tertiary-fixed": "#001d31",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-fixed": "#d5e3fd",
+                    "inverse-on-surface": "#eff1f3",
+                    "border-subtle": "#E2E8F0",
+                    "primary-fixed": "#dae2fd",
+                    "surface-container": "#eceef0",
+                    "on-tertiary-fixed-variant": "#004b73",
+                    "tertiary": "#000000",
+                    "surface": "#f7f9fb",
+                    "background": "#f7f9fb",
+                    "surface-tint": "#565e74",
+                    "surface-container-high": "#e6e8ea",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#0d1c2f",
+                    "on-surface-variant": "#45464d",
+                    "inverse-surface": "#2d3133",
+                    "primary-fixed-dim": "#bec6e0",
+                    "tertiary-fixed-dim": "#93ccff",
+                    "error-container": "#ffdad6",
+                    "official-navy": "#0F172A",
+                    "status-active": "#166534",
+                    "on-tertiary-container": "#188ace",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#b9c7e0",
+                    "outline-variant": "#c6c6cd",
+                    "on-surface": "#191c1e",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#e0e3e5",
+                    "outline": "#76777d",
+                    "on-background": "#191c1e",
+                    "inverse-primary": "#bec6e0",
+                    "primary-container": "#131b2e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "max-width-content": "1280px",
+                    "gutter": "24px",
+                    "base": "4px",
+                    "margin-page": "32px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "data-mono": ["JetBrains Mono"],
+                    "headline-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "data-mono": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-sm": ["18px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-sm": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-bold": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-lg": ["36px", {"lineHeight": "1.1", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .grid-pattern {
+            background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px), linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .search-focus:focus-within {
+            box-shadow: 0 0 0 2px white, 0 0 0 4px #188ace;
+            border-color: #188ace;
+        }
+        .kinetic-card {
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .kinetic-card:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex flex-col min-h-screen selection:bg-on-tertiary-container selection:text-white">
+<!-- Modern Navigation -->
+<nav class="bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-border-subtle">
+<div class="flex justify-between items-center w-full px-margin-page max-w-max-width-content mx-auto h-16">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-official-navy rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<span class="font-headline-md text-headline-md font-bold tracking-tight text-official-navy">SPMS</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-official-navy border-b-2 border-official-navy pb-1 font-label-bold text-label-bold" href="#">Directory</a>
+<a class="text-slate-muted hover:text-official-navy transition-colors font-label-bold text-label-bold" href="#">Dashboard</a>
+<a class="text-slate-muted hover:text-official-navy transition-colors font-label-bold text-label-bold" href="#">Resources</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center gap-4">
+<button class="text-slate-muted hover:text-official-navy transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+<button class="bg-official-navy text-white px-5 py-2 font-label-bold text-label-bold rounded-lg hover:bg-slate-800 transition-all active:scale-95">
+                Sign In
+            </button>
+</div>
+</div>
+</nav>
+<main class="flex-grow pt-16">
+<!-- Kinetic Hero Section -->
+<section class="relative min-h-[640px] flex flex-col items-center justify-center px-margin-mobile bg-white overflow-hidden">
+<div class="absolute inset-0 grid-pattern opacity-40"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white"></div>
+<div class="relative max-w-4xl w-full text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+<div class="inline-flex items-center gap-2 bg-on-tertiary-container/10 px-4 py-1.5 rounded-full text-on-tertiary-container border border-on-tertiary-container/20">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="font-label-bold text-label-bold tracking-wide">SECURE REGISTRY PORTAL</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-official-navy lg:text-5xl tracking-tighter">
+                Personnel Intelligence &amp; <br/><span class="text-on-tertiary-container">Directory Services</span>
+</h1>
+<p class="font-body-lg text-body-lg text-slate-muted max-w-2xl mx-auto">
+                Access the authoritative institutional staff database. Search by personnel credentials, service numbers, or departmental alignment.
+            </p>
+<!-- High-Tech Search Bar -->
+<div class="w-full max-w-4xl mx-auto bg-white border border-border-subtle rounded-2xl p-2 shadow-xl shadow-slate-200/50 search-focus transition-all duration-300">
+<div class="flex flex-col md:flex-row gap-2">
+<div class="flex-grow relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-tertiary-container">search</span>
+<input class="w-full pl-12 pr-4 py-4 bg-transparent border-none focus:ring-0 font-body-md text-body-md text-official-navy placeholder:text-slate-400" placeholder="Search by name, service ID, or rank..." type="text"/>
+</div>
+<div class="flex items-center gap-2 p-1 bg-surface-container-low rounded-xl">
+<select class="bg-transparent border-none focus:ring-0 font-label-bold text-label-bold text-official-navy min-w-[160px]">
+<option>Global Directory</option>
+<option>Operations</option>
+<option>Intelligence</option>
+<option>Administration</option>
+</select>
+<button class="bg-on-tertiary-container text-white px-8 py-3 rounded-lg font-label-bold text-label-bold flex items-center gap-2 hover:bg-on-tertiary-container/90 transition-all shadow-lg shadow-on-tertiary-container/20">
+                            EXECUTE SEARCH
+                        </button>
+</div>
+</div>
+</div>
+<!-- Quick Access Chips -->
+<div class="flex flex-wrap justify-center gap-3 mt-8">
+<span class="font-label-bold text-label-bold text-slate-muted self-center mr-2">Top Classifications:</span>
+<button class="px-5 py-2 bg-white border border-border-subtle rounded-lg font-label-bold text-label-bold text-official-navy hover:border-on-tertiary-container hover:text-on-tertiary-container transition-all">Strategic Command</button>
+<button class="px-5 py-2 bg-white border border-border-subtle rounded-lg font-label-bold text-label-bold text-official-navy hover:border-on-tertiary-container hover:text-on-tertiary-container transition-all">Technical Division</button>
+<button class="px-5 py-2 bg-white border border-border-subtle rounded-lg font-label-bold text-label-bold text-official-navy hover:border-on-tertiary-container hover:text-on-tertiary-container transition-all">Field Officers</button>
+</div>
+</div>
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-muted opacity-40">
+<span class="font-label-bold text-[10px] uppercase tracking-[0.3em]">System Overview</span>
+<span class="material-symbols-outlined animate-bounce">expand_more</span>
+</div>
+</section>
+<!-- Kinetic Bento Layout -->
+<section class="max-w-max-width-content mx-auto px-margin-page py-24 space-y-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Restyled Security Section -->
+<div class="lg:col-span-7 bg-white kinetic-card border border-border-subtle p-10 rounded-2xl flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 bg-on-tertiary-container/5 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">lock_person</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-official-navy">Security Protocol</h2>
+<p class="text-body-sm text-slate-muted">Access Governance &amp; Data Privacy</p>
+</div>
+</div>
+<div class="space-y-6">
+<p class="font-body-md text-body-md text-slate-muted leading-relaxed">
+                            The SPMS Public Portal operates under strict federal data protection guidelines. Public queries are monitored in real-time to ensure institutional integrity and prevent unauthorized harvesting of sensitive personnel data.
+                        </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="flex items-center gap-3 p-4 bg-surface rounded-xl border border-border-subtle/50">
+<span class="material-symbols-outlined text-status-active">verified_user</span>
+<span class="font-body-sm text-body-sm font-medium">AES-256 Encryption</span>
+</div>
+<div class="flex items-center gap-3 p-4 bg-surface rounded-xl border border-border-subtle/50">
+<span class="material-symbols-outlined text-status-active">visibility_off</span>
+<span class="font-body-sm text-body-sm font-medium">PII Redaction Active</span>
+</div>
+<div class="flex items-center gap-3 p-4 bg-surface rounded-xl border border-border-subtle/50">
+<span class="material-symbols-outlined text-status-active">history</span>
+<span class="font-body-sm text-body-sm font-medium">Immutable Audit Logs</span>
+</div>
+<div class="flex items-center gap-3 p-4 bg-surface rounded-xl border border-border-subtle/50">
+<span class="material-symbols-outlined text-status-active">sync</span>
+<span class="font-body-sm text-body-sm font-medium">Real-time Sync</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 pt-8 border-t border-border-subtle flex flex-col sm:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-status-active animate-pulse"></span>
+<span class="font-label-bold text-label-bold text-official-navy uppercase tracking-wider">System Status: Secure</span>
+</div>
+<a class="text-on-tertiary-container font-label-bold text-label-bold flex items-center gap-1 hover:underline" href="#">
+                        Compliance documentation
+                        <span class="material-symbols-outlined text-[16px]">arrow_outward</span>
+</a>
+</div>
+</div>
+<!-- How to Search Card - SaaS style -->
+<div class="lg:col-span-5 flex flex-col gap-8">
+<div class="bg-official-navy p-10 rounded-2xl text-white relative overflow-hidden kinetic-card">
+<div class="absolute -right-12 -top-12 w-48 h-48 bg-white/5 rounded-full blur-3xl"></div>
+<h3 class="font-headline-sm text-headline-sm mb-8">Search Workflow</h3>
+<div class="space-y-8 relative z-10">
+<div class="flex gap-6 items-start">
+<span class="flex-shrink-0 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center font-data-mono text-lg">01</span>
+<div>
+<h4 class="font-label-bold text-label-bold mb-1 uppercase tracking-wider">Identify Subject</h4>
+<p class="font-body-sm text-body-sm text-white/70">Prepare the full legal name or unique 8-digit service identifier.</p>
+</div>
+</div>
+<div class="flex gap-6 items-start">
+<span class="flex-shrink-0 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center font-data-mono text-lg">02</span>
+<div>
+<h4 class="font-label-bold text-label-bold mb-1 uppercase tracking-wider">Define Scope</h4>
+<p class="font-body-sm text-body-sm text-white/70">Apply departmental filters to refine results across large divisions.</p>
+</div>
+</div>
+<div class="flex gap-6 items-start">
+<span class="flex-shrink-0 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center font-data-mono text-lg">03</span>
+<div>
+<h4 class="font-label-bold text-label-bold mb-1 uppercase tracking-wider">Verify Record</h4>
+<p class="font-body-sm text-body-sm text-white/70">Validate against the current Registry Division status timestamp.</p>
+</div>
+</div>
+</div>
+</div>
+<a class="bg-white p-6 border border-border-subtle rounded-2xl flex items-center justify-between kinetic-card group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-surface rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-official-navy">headset_mic</span>
+</div>
+<div>
+<p class="font-label-bold text-label-bold text-official-navy">Support Center</p>
+<p class="text-[12px] text-slate-muted">Average response: 15 mins</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-muted group-hover:text-on-tertiary-container transition-colors">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Modern Data Statement -->
+<div class="bg-white border border-border-subtle p-10 rounded-2xl kinetic-card">
+<div class="flex flex-col md:flex-row gap-12 items-center">
+<div class="w-full md:w-5/12 h-64 overflow-hidden rounded-xl border border-border-subtle">
+<div class="bg-cover bg-center w-full h-full hover:scale-105 transition-transform duration-700 ease-out" data-alt="Office workspace" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD0XfdJvUpXmDhDt2WhLVdUo04H6jTF24fzDQ8LyliJvquYpmPZYy4DSpONUDKDH1g37S6E958EWmH8LTjdtrpj6QWHWbOzc_D2nLEKjnLdlje7W7Mdq_XgJ08uz7It_ilK_fTCkU-BjZ0GvsofX89WyXjiyxgbMZXwf-RfPO0X-xeVHFepiaHxKbD6qKsDoS2f9bRB0VIC1NyRKKurvINOIWa2-cG5vzW1mfEhBN-wmry3xWU7HmVFeri0rSk5vxzdo6IlZjkK8eY')"></div>
+</div>
+<div class="w-full md:w-7/12">
+<div class="w-12 h-1 bg-on-tertiary-container mb-6"></div>
+<h3 class="font-headline-sm text-headline-sm text-official-navy mb-4">Precision Institutional Auditing</h3>
+<p class="font-body-lg text-body-lg text-slate-muted italic leading-relaxed">
+                        "The integrity of our personnel data is non-negotiable. By leveraging the Kinetic Enterprise framework, we ensure that every query is backed by a redundant, multi-layer verification protocol that maintains absolute accuracy across the entire institution."
+                    </p>
+<div class="mt-6 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-200"></div>
+<div>
+<p class="font-label-bold text-label-bold text-official-navy">Director of Registry Operations</p>
+<p class="text-[12px] text-slate-muted uppercase tracking-widest">Bureau of Personnel</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-white border-t border-border-subtle mt-auto">
+<div class="w-full py-12 px-margin-page max-w-max-width-content mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex flex-col items-center md:items-start gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-official-navy text-[20px]">shield</span>
+<span class="font-label-bold text-label-bold text-official-navy tracking-tighter">SPMS REGISTRY</span>
+</div>
+<p class="font-body-sm text-body-sm text-slate-muted">© 2024 Institutional Registry Division. All Rights Reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-x-8 gap-y-4">
+<a class="text-body-sm text-slate-muted hover:text-official-navy transition-colors" href="#">Security Policy</a>
+<a class="text-body-sm text-slate-muted hover:text-official-navy transition-colors" href="#">Terms of Access</a>
+<a class="text-body-sm text-slate-muted hover:text-official-navy transition-colors" href="#">Audit Documentation</a>
+<a class="text-body-sm text-slate-muted hover:text-official-navy transition-colors" href="#">Help Desk</a>
+</div>
+</div>
+<div class="mt-12 pt-8 border-t border-border-subtle text-center">
+<p class="text-[11px] text-slate-400 uppercase tracking-[0.2em]">Authorized Personnel Only Beyond This Portal</p>
+</div>
+</div>
+</footer>
+<script>
+    // Search bar focus micro-interactions
+    const searchInput = document.querySelector('input[type="text"]');
+    const searchContainer = searchInput.closest('.search-focus');
+    
+    searchInput.addEventListener('focus', () => {
+        searchContainer.classList.add('shadow-2xl', 'shadow-on-tertiary-container/10');
+    });
+    
+    searchInput.addEventListener('blur', () => {
+        searchContainer.classList.remove('shadow-2xl', 'shadow-on-tertiary-container/10');
+    });
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-4', 'duration-700');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.kinetic-card').forEach(el => observer.observe(el));
+</script>
+</body></html>
