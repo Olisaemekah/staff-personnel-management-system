@@ -25,13 +25,28 @@ This repository adds a Supabase-backed API layer for the existing SPMS frontend.
 
 ## GitHub
 
-This repository can be initialized locally with git. After you connect a GitHub remote, run:
+This repository has been initialized locally and committed.
+
+To push to GitHub, add a remote and push from your local machine:
 
 ```bash
-git add .
-git commit -m "Initialize Supabase backend and Vercel config"
-git push origin main
+git remote add origin https://github.com/<your-username>/<repo-name>.git
+git push -u origin main
 ```
+
+If you use GitHub CLI, authenticate first:
+
+```bash
+gh auth login
+```
+
+## Current status
+
+- Backend scaffold created and committed locally.
+- `package.json` and `vercel.json` are present.
+- Supabase schema and API endpoints are in place.
+- `npm install` is currently blocked by local npm installation instability / SIGINT failures.
+- GitHub push and Vercel deployment require CLI authentication and successful dependency installation.
 
 ## Notes
 
