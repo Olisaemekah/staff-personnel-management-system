@@ -1183,7 +1183,6 @@ class Component extends DCLogic {
     formMode: 'add',
     formData: { name:'', rank:'', serviceNumber:'', course:'', batch:'', coursesAttended:[], deployments:[], currentAppointment:'', currentUnit:'', currentDept:'', dateAssumed:'', photo:'' },
     formError: '', loginError: '', notification: null, deleteConfirmId: null,
-    showAddUserModal: false, addUserForm: { username:'', password:'', role:'viewer', name:'' }, addUserError: '',
     editUserModal: null, editUserError: '',
     sidebarCollapsed: false, isMobile: false, shareModal: null,
   };
@@ -1379,19 +1378,8 @@ class Component extends DCLogic {
     this.showNotification('success', 'User updated successfully.');
   }
 
-  handleAddUser = () => {
-    const { addUserForm, users } = this.state;
-    if (!addUserForm.name.trim()) { this.setState({ addUserError:'Full name is required.' }); return; }
-    if (!addUserForm.username.trim()) { this.setState({ addUserError:'Username is required.' }); return; }
-    if (!addUserForm.password.trim()) { this.setState({ addUserError:'Password is required.' }); return; }
-    if (users.some(u => u.username === addUserForm.username.trim())) { this.setState({ addUserError:'Username already exists.' }); return; }
-    const u = { id:Date.now(), username:addUserForm.username.trim(), password:addUserForm.password.trim(), role:addUserForm.role, name:addUserForm.name.trim(), lastLogin:'Never', status:'active' };
-    this.setState(s => ({ users:[...s.users,u], showAddUserModal:false, addUserForm:{username:'',password:'',role:'viewer',name:''}, addUserError:'' }));
-    this.showNotification('success', 'User ' + u.username + ' created successfully.');
-  }
-
   renderVals() {
-    const { page, currentUser, staffList, users, searchQuery, publicSearchQuery, publicSelectedStaffId, filters, sortBy, selectedStaffId, formData, formMode, loginError, notification, deleteConfirmId, showAddUserModal, addUserForm, addUserError } = this.state;
+    const { page, currentUser, staffList, users, searchQuery, publicSearchQuery, publicSelectedStaffId, filters, sortBy, selectedStaffId, formData, formMode, loginError, notification, deleteConfirmId } = this.state;
     const isAdmin = !!(currentUser && currentUser.role === 'admin');
     const isLoggedIn = !!currentUser;
 
@@ -1577,13 +1565,7 @@ class Component extends DCLogic {
       clearFilters:()=>this.setState({searchQuery:'',filters:{rank:'',course:'',yearJoined:''},sortBy:'az'}),
 
       // Users
-      usersWithDisplay, showAddUserModal,
-      openAddUserModal:()=>this.setState({showAddUserModal:true,addUserError:'',addUserForm:{username:'',password:'',role:'viewer',name:''}}),
-      closeAddUserModal:()=>this.setState({showAddUserModal:false}),
-      handleAddUser:this.handleAddUser,
-      addUserFormName:addUserForm.name, addUserFormUsername:addUserForm.username, addUserFormRole:addUserForm.role,
-      handleAddUserInput:(e)=>{ const f=e.target.dataset.field; if(f) this.setState(s=>({addUserForm:{...s.addUserForm,[f]:e.target.value}})); },
-      addUserError,
+      usersWithDisplay,
 
       // Delete modal
       showDeleteModal:!!deleteConfirmId,
