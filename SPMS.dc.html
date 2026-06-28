@@ -1549,6 +1549,7 @@ class Component extends DCLogic {
       isPublicPortal: page==='public',
       isMainApp: isLoggedIn && page!=='public',
       isAdmin,
+      isPrimaryAdmin,
       isDashboard: isLoggedIn&&renderPage==='dashboard',
       isDirectory: isLoggedIn&&renderPage==='directory',
       isProfile: isLoggedIn&&renderPage==='profile',
