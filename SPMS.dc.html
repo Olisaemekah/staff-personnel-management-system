@@ -1159,6 +1159,8 @@ class Component extends DCLogic {
     };
     window.addEventListener('resize', this._resizeHandler);
 
+    this.loadStoredData();
+
     // Read hash — supports shared public links
     const hash = window.location.hash;
     if (hash === '#public') {
@@ -1173,8 +1175,38 @@ class Component extends DCLogic {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.staffList !== this.state.staffList || prevState.users !== this.state.users) {
+      this.persistStoredData(this.state);
+    }
+  }
+
   componentWillUnmount() {
     if (this._resizeHandler) window.removeEventListener('resize', this._resizeHandler);
+  }
+
+  loadStoredData() {
+    try {
+      const staffText = localStorage.getItem('spms.staffList');
+      const usersText = localStorage.getItem('spms.users');
+      const storedStaff = staffText ? JSON.parse(staffText) : null;
+      const storedUsers = usersText ? JSON.parse(usersText) : null;
+      this.setState(s => ({
+        staffList: Array.isArray(storedStaff) ? storedStaff : s.staffList,
+        users: Array.isArray(storedUsers) ? storedUsers : s.users,
+      }));
+    } catch (err) {
+      console.warn('Failed to load SPMS data from localStorage', err);
+    }
+  }
+
+  persistStoredData(state) {
+    try {
+      localStorage.setItem('spms.staffList', JSON.stringify(state.staffList));
+      localStorage.setItem('spms.users', JSON.stringify(state.users));
+    } catch (err) {
+      console.warn('Failed to save SPMS data to localStorage', err);
+    }
   }
 
   state = {
