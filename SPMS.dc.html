@@ -1481,7 +1481,7 @@ class Component extends DCLogic {
   renderVals() {
     const { page, currentUser, staffList, users, searchQuery, publicSearchQuery, publicSelectedStaffId, filters, sortBy, selectedStaffId, formData, formMode, loginError, notification, deleteConfirmId } = this.state;
     const isAdmin = !!(currentUser && currentUser.role === 'admin');
-    const isPrimaryAdmin = isAdmin;
+    const isPrimaryAdmin = !!(currentUser && currentUser.username === 'admin');
     const isLoggedIn = !!currentUser;
     const renderPage = page==='user-management' && isLoggedIn && !isPrimaryAdmin ? 'dashboard' : page;
 
@@ -1653,7 +1653,7 @@ class Component extends DCLogic {
       navToDashboard:()=>this.setState({page:'dashboard'}),
       navToDirectory:()=>this.setState({page:'directory'}),
       navToAddStaff:()=>this.setState({formMode:'add',formData:this.getEmptyForm(),formError:'',page:'add-staff'}),
-      navToUserMgmt:()=>{ const cu=this.state.currentUser; if(cu&&cu.id===1) this.setState({page:'user-management'}); },
+      navToUserMgmt:()=>{ const cu=this.state.currentUser; if(cu&&cu.username==='admin') this.setState({page:'user-management'}); },
       navToExport:()=>this.setState({page:'export'}),
       navToPublic:()=>this.setState({page:'public'}),
 
