@@ -29,6 +29,7 @@
     @media (max-width: 900px) {
       .hide-mobile { display: none !important; }
     }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @media print {
       #spms-sidebar, #spms-topbar, .no-print { display: none !important; }
       body { background: white; }
@@ -37,6 +38,16 @@
 </helmet>
 
 <div style="min-height:100vh; font-family:'Inter',sans-serif;">
+
+  <!-- LOADING OVERLAY -->
+  <sc-if value="{{ isLoading }}">
+    <div style="position:fixed; inset:0; background:rgba(255,255,255,0.92); display:flex; align-items:center; justify-content:center; z-index:9998;">
+      <div style="text-align:center;">
+        <div style="width:40px; height:40px; border:3px solid #e2e8f0; border-top-color:#1e3a8a; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 14px;"></div>
+        <div style="font-size:13px; color:#64748b; font-weight:500;">Loading system data…</div>
+      </div>
+    </div>
+  </sc-if>
 
   <!-- TOAST -->
   <sc-if value="{{ showNotification }}">
@@ -1159,58 +1170,61 @@ class Component extends DCLogic {
     };
     window.addEventListener('resize', this._resizeHandler);
 
-    this.loadStoredData();
+    this.fetchStaffFromAPI();
+    this.fetchUsersFromAPI();
 
     // Read hash — supports shared public links
     const hash = window.location.hash;
     if (hash === '#public') {
       this.setState({ page: 'public' });
     } else {
-      const m = hash.match(/^#public-(\d+)$/);
+      const m = hash.match(/^#public-(.+)$/);
       if (m) {
-        const id = parseInt(m[1]);
-        const staff = this.state.staffList.find(s => s.id === id);
-        if (staff) this.setState({ page: 'public', publicSelectedStaffId: id });
+        this.setState({ page: 'public', pendingPublicId: m[1] });
       }
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.staffList !== this.state.staffList || prevState.users !== this.state.users) {
-      this.persistStoredData(this.state);
-    }
-  }
+  componentDidUpdate() {}
 
   componentWillUnmount() {
     if (this._resizeHandler) window.removeEventListener('resize', this._resizeHandler);
   }
 
-  loadStoredData() {
+  async fetchStaffFromAPI() {
+    this.setState({ isLoading: true });
     try {
-      const staffText = localStorage.getItem('spms.staffList');
-      const usersText = localStorage.getItem('spms.users');
-      const storedStaff = staffText ? JSON.parse(staffText) : null;
-      const storedUsers = usersText ? JSON.parse(usersText) : null;
-      this.setState(s => ({
-        staffList: Array.isArray(storedStaff) ? storedStaff : s.staffList,
-        users: Array.isArray(storedUsers) ? storedUsers : s.users,
-      }));
+      const res = await fetch('/api/staff');
+      const json = await res.json();
+      if (json.staff) {
+        const newState = { staffList: json.staff, isLoading: false };
+        if (this.state.pendingPublicId) {
+          const found = json.staff.find(s => String(s.id) === String(this.state.pendingPublicId));
+          if (found) { newState.publicSelectedStaffId = this.state.pendingPublicId; newState.pendingPublicId = null; }
+        }
+        this.setState(newState);
+      } else {
+        this.setState({ isLoading: false });
+      }
     } catch (err) {
-      console.warn('Failed to load SPMS data from localStorage', err);
+      console.error('Failed to load staff from API', err);
+      this.setState({ isLoading: false });
     }
   }
 
-  persistStoredData(state) {
+  async fetchUsersFromAPI() {
     try {
-      localStorage.setItem('spms.staffList', JSON.stringify(state.staffList));
-      localStorage.setItem('spms.users', JSON.stringify(state.users));
+      const res = await fetch('/api/users');
+      const json = await res.json();
+      if (json.users) this.setState({ users: json.users });
     } catch (err) {
-      console.warn('Failed to save SPMS data to localStorage', err);
+      console.error('Failed to load users from API', err);
     }
   }
 
   state = {
-    page: 'login', currentUser: null, staffList: INITIAL_STAFF, users: INITIAL_USERS,
+    page: 'login', currentUser: null, staffList: [], users: [],
+    isLoading: true, isSaving: false, pendingPublicId: null,
     selectedStaffId: null, previousPage: 'directory',
     searchQuery: '', publicSearchQuery: '', publicSelectedStaffId: null,
     filters: { rank:'', course:'', yearJoined:'' }, sortBy: 'az',
@@ -1279,11 +1293,22 @@ class Component extends DCLogic {
 
   confirmDelete = (id) => { this.setState({ deleteConfirmId: id }); }
 
-  executeDelete = () => {
+  executeDelete = async () => {
     const { deleteConfirmId, staffList } = this.state;
     const name = (staffList.find(s => s.id === deleteConfirmId)||{}).name || 'Staff member';
-    this.setState(prev => ({ staffList: prev.staffList.filter(s => s.id !== deleteConfirmId), deleteConfirmId:null, page:'directory', selectedStaffId:null }));
-    this.showNotification('success', name + ' has been removed.');
+    this.setState({ deleteConfirmId: null });
+    try {
+      const res = await fetch('/api/staff?id=' + deleteConfirmId, { method: 'DELETE' });
+      if (res.ok) {
+        this.setState(prev => ({ staffList: prev.staffList.filter(s => s.id !== deleteConfirmId), page: 'directory', selectedStaffId: null }));
+        this.showNotification('success', name + ' has been removed.');
+      } else {
+        const json = await res.json();
+        this.showNotification('error', (json && json.error) || 'Failed to delete. Please try again.');
+      }
+    } catch (err) {
+      this.showNotification('error', 'Connection error. Please try again.');
+    }
   }
 
   showNotification(type, message) {
@@ -1291,14 +1316,27 @@ class Component extends DCLogic {
     setTimeout(() => this.setState({ notification: null }), 3500);
   }
 
-  handleLogin = (e) => {
+  handleLogin = async (e) => {
     e.preventDefault();
     const el = e.target.elements;
     const username = (el.namedItem('username')||{}).value ? el.namedItem('username').value.trim() : '';
     const password = (el.namedItem('password')||{}).value || '';
-    const user = this.state.users.find(u => u.username === username && u.password === password);
-    if (user) { this.setState({ currentUser: user, page: 'dashboard', loginError: '' }); }
-    else { this.setState({ loginError: 'Invalid username or password. Please try again.' }); }
+    this.setState({ loginError: '' });
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const json = await res.json();
+      if (res.ok && json.user) {
+        this.setState({ currentUser: json.user, page: 'dashboard', loginError: '' });
+      } else {
+        this.setState({ loginError: (json && json.error) || 'Invalid username or password. Please try again.' });
+      }
+    } catch (err) {
+      this.setState({ loginError: 'Unable to connect to server. Please check your connection.' });
+    }
   }
 
   handleLogout = () => { this.setState({ currentUser:null, page:'login', searchQuery:'', filters:{rank:'',course:'',yearJoined:''}, selectedStaffId:null, publicSelectedStaffId:null, publicSearchQuery:'' }); }
@@ -1367,18 +1405,41 @@ class Component extends DCLogic {
     reader.readAsDataURL(file);
   }
 
-  handleFormSubmit = () => {
+  handleFormSubmit = async () => {
     const { formData, formMode, selectedStaffId } = this.state;
     if (!formData.name.trim()) { this.setState({ formError:'Full name is required.' }); return; }
     if (!formData.rank) { this.setState({ formError:'Rank is required.' }); return; }
     if (!formData.serviceNumber.trim()) { this.setState({ formError:'Service number is required.' }); return; }
-    if (formMode === 'add') {
-      const rec = { id:Date.now(), name:formData.name.trim(), rank:formData.rank, serviceNumber:formData.serviceNumber.trim(), course:formData.course.trim(), batch:formData.batch.trim(), yearJoined:new Date().getFullYear(), status:'active', photo:formData.photo||'', currentDeployment:{appointment:formData.currentAppointment.trim(),unit:formData.currentUnit.trim(),department:formData.currentDept.trim(),dateAssumed:formData.dateAssumed}, coursesAttended:formData.coursesAttended, deployments:formData.deployments, createdAt:new Date().toISOString().split('T')[0] };
-      this.setState(s => ({ staffList:[...s.staffList,rec], page:'directory', formError:'', formData:this.getEmptyForm() }));
-      this.showNotification('success', rec.name + ' added successfully.');
-    } else {
-      this.setState(s => ({ staffList:s.staffList.map(st=>st.id===selectedStaffId?{...st,name:formData.name.trim(),rank:formData.rank,serviceNumber:formData.serviceNumber.trim(),course:formData.course.trim(),batch:formData.batch.trim(),photo:formData.photo||st.photo||'',currentDeployment:{appointment:formData.currentAppointment.trim(),unit:formData.currentUnit.trim(),department:formData.currentDept.trim(),dateAssumed:formData.dateAssumed},coursesAttended:formData.coursesAttended,deployments:formData.deployments}:st), page:'profile', formError:'' }));
-      this.showNotification('success', 'Staff record updated successfully.');
+    this.setState({ isSaving: true, formError: '' });
+    const payload = {
+      name: formData.name.trim(), rank: formData.rank, serviceNumber: formData.serviceNumber.trim(),
+      course: formData.course.trim(), batch: formData.batch.trim(),
+      yearJoined: new Date().getFullYear(), status: 'active', photo: formData.photo || '',
+      currentDeployment: { appointment: formData.currentAppointment.trim(), unit: formData.currentUnit.trim(), department: formData.currentDept.trim(), dateAssumed: formData.dateAssumed },
+      coursesAttended: formData.coursesAttended, deployments: formData.deployments
+    };
+    try {
+      if (formMode === 'add') {
+        const res = await fetch('/api/staff', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const json = await res.json();
+        if (res.ok && json.staff) {
+          this.setState(s => ({ staffList: [json.staff, ...s.staffList], page: 'directory', formError: '', formData: this.getEmptyForm(), isSaving: false }));
+          this.showNotification('success', payload.name + ' added successfully.');
+        } else {
+          this.setState({ formError: (json && json.error) || 'Failed to save. Please try again.', isSaving: false });
+        }
+      } else {
+        const res = await fetch('/api/staff?id=' + selectedStaffId, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const json = await res.json();
+        if (res.ok && json.staff) {
+          this.setState(s => ({ staffList: s.staffList.map(st => st.id === selectedStaffId ? json.staff : st), page: 'profile', formError: '', isSaving: false }));
+          this.showNotification('success', 'Staff record updated successfully.');
+        } else {
+          this.setState({ formError: (json && json.error) || 'Failed to update. Please try again.', isSaving: false });
+        }
+      }
+    } catch (err) {
+      this.setState({ formError: 'Connection error. Please try again.', isSaving: false });
     }
   }
 
@@ -1391,7 +1452,7 @@ class Component extends DCLogic {
     if (f) this.setState(s => ({ editUserModal: { ...s.editUserModal, [f]: e.target.value }, editUserError: '' }));
   }
 
-  handleSaveEditUser = () => {
+  handleSaveEditUser = async () => {
     const { editUserModal, users } = this.state;
     if (!editUserModal) return;
     if (!editUserModal.name.trim()) { this.setState({ editUserError: 'Full name is required.' }); return; }
@@ -1399,23 +1460,28 @@ class Component extends DCLogic {
     if (users.some(u => u.username === editUserModal.username.trim() && u.id !== editUserModal.id)) {
       this.setState({ editUserError: 'Username already taken.' }); return;
     }
-    this.setState(s => ({
-      users: s.users.map(u => u.id === editUserModal.id ? {
-        ...u,
-        name: editUserModal.name.trim(),
-        username: editUserModal.username.trim(),
-        role: editUserModal.role,
-        ...(editUserModal.password.trim() ? { password: editUserModal.password.trim() } : {})
-      } : u),
-      editUserModal: null, editUserError: ''
-    }));
-    this.showNotification('success', 'User updated successfully.');
+    try {
+      const res = await fetch('/api/users?id=' + editUserModal.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: editUserModal.name.trim(), username: editUserModal.username.trim(), role: editUserModal.role, password: editUserModal.password.trim() || '' })
+      });
+      const json = await res.json();
+      if (res.ok) {
+        this.setState(s => ({ users: s.users.map(u => u.id === editUserModal.id ? { ...u, name: editUserModal.name.trim(), username: editUserModal.username.trim(), role: editUserModal.role } : u), editUserModal: null, editUserError: '' }));
+        this.showNotification('success', 'User updated successfully.');
+      } else {
+        this.setState({ editUserError: (json && json.error) || 'Failed to update user.' });
+      }
+    } catch (err) {
+      this.setState({ editUserError: 'Connection error. Please try again.' });
+    }
   }
 
   renderVals() {
     const { page, currentUser, staffList, users, searchQuery, publicSearchQuery, publicSelectedStaffId, filters, sortBy, selectedStaffId, formData, formMode, loginError, notification, deleteConfirmId } = this.state;
     const isAdmin = !!(currentUser && currentUser.role === 'admin');
-    const isPrimaryAdmin = !!(currentUser && currentUser.id === 1);
+    const isPrimaryAdmin = isAdmin;
     const isLoggedIn = !!currentUser;
     const renderPage = page==='user-management' && isLoggedIn && !isPrimaryAdmin ? 'dashboard' : page;
 
@@ -1467,7 +1533,7 @@ class Component extends DCLogic {
     const formCoursesAttended = formData.coursesAttended.map(c=>({...c, onRemove:()=>this.setState(s=>({formData:{...s.formData,coursesAttended:s.formData.coursesAttended.filter(x=>x.id!==c.id)}}))}));
     const formDeployments = formData.deployments.map(d=>({...d, onRemove:()=>this.setState(s=>({formData:{...s.formData,deployments:s.formData.deployments.filter(x=>x.id!==d.id)}}))}));
 
-    const usersWithDisplay = users.map(u=>({...u, initials:this.getInitials(u.name), avatarColor:this.getAvatarColor(u.name), roleDisplay:u.role==='admin'?'Administrator':'Viewer', roleBg:u.role==='admin'?'#dde8f5':'#dcfce7', roleColor:u.role==='admin'?'#162f72':'#166534', canDelete:u.id!==1&&(!currentUser||u.id!==currentUser.id), onEdit:()=>this.openEditUser(u), onDelete:()=>{ this.setState(s=>({users:s.users.filter(x=>x.id!==u.id)})); this.showNotification('success',u.username+' removed.'); }}));
+    const usersWithDisplay = users.map(u=>({...u, initials:this.getInitials(u.name), avatarColor:this.getAvatarColor(u.name), roleDisplay:u.role==='admin'?'Administrator':'Viewer', roleBg:u.role==='admin'?'#dde8f5':'#dcfce7', roleColor:u.role==='admin'?'#162f72':'#166534', canDelete:(!currentUser||u.id!==currentUser.id), onEdit:()=>this.openEditUser(u), onDelete:()=>{ fetch('/api/users?id='+u.id,{method:'DELETE'}).then(r=>{ if(r.ok){ this.setState(s=>({users:s.users.filter(x=>x.id!==u.id)})); this.showNotification('success',u.username+' removed.'); } else { this.showNotification('error','Failed to remove user.'); } }).catch(()=>this.showNotification('error','Connection error.')); }}));
 
     const pubQ = publicSearchQuery;
     const imgStyle = { width:'100%', height:'100%', objectFit:'cover', display:'block', position:'absolute', inset:0 };
@@ -1535,7 +1601,9 @@ class Component extends DCLogic {
 
       // Form
       formTitle:formMode==='add'?'Register New Personnel':'Edit Personnel Record',
-      formSubmitLabel:formMode==='add'?'Save Personnel Record':'Save Changes',
+      formSubmitLabel:formMode==='add'?(this.state.isSaving?'Saving…':'Save Personnel Record'):(this.state.isSaving?'Saving…':'Save Changes'),
+      isLoading: this.state.isLoading,
+      isSaving: this.state.isSaving,
       formName:formData.name, formRank:formData.rank, formServiceNumber:formData.serviceNumber,
       formCourse:formData.course, formBatch:formData.batch,
       formCurrentAppointment:formData.currentAppointment, formCurrentUnit:formData.currentUnit,
