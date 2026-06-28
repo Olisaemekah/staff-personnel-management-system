@@ -1099,48 +1099,6 @@
     </div>
   </sc-if>
 
-  <!-- ADD USER MODAL -->
-  <sc-if value="{{ showAddUserModal }}">
-    <div style="position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; padding:24px; animation:fadeIn 0.2s ease;">
-      <div style="background:white; border-radius:12px; padding:28px 32px; max-width:440px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.2); border:1px solid #e2e8f0;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
-          <div style="font-size:18px; font-weight:700; color:#0f172a;">Add New User</div>
-          <button onClick="{{ closeAddUserModal }}" style="width:30px; height:30px; background:#f1f5f9; border:none; border-radius:7px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#64748b;" style-hover="background:#e2e8f0;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <sc-if value="{{ addUserError }}">
-          <div style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:10px 14px; border-radius:7px; font-size:13px; margin-bottom:14px;">{{ addUserError }}</div>
-        </sc-if>
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div>
-            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Full Name</label>
-            <input value="{{ addUserFormName }}" data-field="name" onInput="{{ handleAddUserInput }}" type="text" placeholder="e.g. Lt. Col. John Doe" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
-          </div>
-          <div>
-            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Username</label>
-            <input value="{{ addUserFormUsername }}" data-field="username" onInput="{{ handleAddUserInput }}" type="text" placeholder="e.g. johndoe" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
-          </div>
-          <div>
-            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Password</label>
-            <input data-field="password" onInput="{{ handleAddUserInput }}" type="password" placeholder="Set a password" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none;" />
-          </div>
-          <div>
-            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Role</label>
-            <select value="{{ addUserFormRole }}" data-field="role" onChange="{{ handleAddUserInput }}" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; cursor:pointer; outline:none;">
-              <option value="viewer">Viewer (Search &amp; View only)</option>
-              <option value="admin">Administrator (Full Access)</option>
-            </select>
-          </div>
-        </div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-          <button onClick="{{ handleAddUser }}" style="flex:1; background:#1e3a8a; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600;" style-hover="background:#162f72;">Create User</button>
-          <button onClick="{{ closeAddUserModal }}" style="flex:1; background:#f1f5f9; color:#374151; border:1px solid #e2e8f0; padding:12px; border-radius:8px; cursor:pointer; font-size:14px;" style-hover="background:#e2e8f0;">Cancel</button>
-        </div>
-      </div>
-    </div>
-  </sc-if>
-
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
