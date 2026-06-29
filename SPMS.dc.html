@@ -30,22 +30,30 @@
       .hide-mobile { display: none !important; }
     }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ── Top bar: 2-row layout on every screen size ── */
+    .mob-topbar { flex-wrap: wrap; height: auto !important; padding: 10px 20px 0; row-gap: 0; column-gap: 0; }
+    .mob-topbar::after { content: ''; display: block; flex: 0 0 100%; order: 3; height: 10px; }
+    .mob-logo     { order: 1; flex-shrink: 0; }
+    .mob-title    { display: none; }
+    .mob-initials { order: 2; margin-left: auto; flex-shrink: 0; }
+    .mob-hamburger{ order: 4; margin-bottom: 12px; }
+    .mob-addstaff { order: 5; margin-left: auto; margin-bottom: 12px; }
+
+    /* ── Mobile refinements ── */
     @media (max-width: 640px) {
       /* Horizontal scroll on table cards */
       .t-scroll { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
-      /* Min widths so grid columns never collapse below readable size */
       .t-row-6 { min-width: 700px; }
       .t-row-4 { min-width: 480px; }
       /* Public portal hero */
       .pub-title { font-size: 24px !important; line-height: 1.3 !important; }
-      /* Mobile top bar: two rows */
-      .mob-topbar { flex-wrap: wrap !important; height: auto !important; padding: 10px 16px 0 !important; row-gap: 0 !important; column-gap: 0 !important; }
-      .mob-topbar::after { content: ''; display: block; flex: 0 0 100%; order: 3; height: 8px; }
-      .mob-logo  { order: 1 !important; flex-shrink: 0; }
-      .mob-title { display: none !important; }
-      .mob-initials { order: 2 !important; margin-left: auto !important; flex-shrink: 0; }
-      .mob-hamburger { order: 4 !important; margin-bottom: 10px !important; }
-      .mob-addstaff  { order: 5 !important; margin-left: 10px !important; margin-bottom: 10px !important; font-size: 11px !important; padding: 7px 11px !important; }
+      /* Scale down Add Staff in topbar */
+      .mob-addstaff { font-size: 11px !important; padding: 6px 10px !important; }
+      /* Scale down secondary action buttons (profile page, etc.) */
+      .a-btn { font-size: 11px !important; padding: 5px 10px !important; gap: 4px !important; }
+      .a-btn-primary { font-size: 11px !important; padding: 5px 12px !important; }
+      .a-btn-danger  { font-size: 11px !important; padding: 5px 10px !important; }
     }
     @media print {
       #spms-sidebar, #spms-topbar, .no-print { display: none !important; }
@@ -624,23 +632,19 @@
             <sc-if value="{{ hasProfile }}">
               <div style="animation:slideUp 0.3s ease;">
                 <!-- Breadcrumb + actions -->
-                <div class="no-print" style="display:flex; align-items:center; margin-bottom:18px;">
+                <div class="no-print" style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:18px;">
                   <button onClick="{{ profileOnBack }}" style="background:none; border:none; font-size:11px; font-weight:600; color:#94a3b8; cursor:pointer; text-transform:uppercase; letter-spacing:0.8px; padding:0;" style-hover="color:#1e3a8a;">Personnel</button>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2" style="margin:0 6px;"><path d="M9 18l6-6-6-6"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                   <span style="font-size:11px; font-weight:700; color:#0f172a; text-transform:uppercase; letter-spacing:0.8px;">Profile Detail</span>
-                  <div style="flex:1;"></div>
-                  <div style="display:flex; gap:8px;">
-                    <button onClick="{{ handlePrint }}" style="background:white; border:1px solid #e2e8f0; color:#374151; padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:6px;" style-hover="background:#f8fafc;">
+                  <div style="flex:1; min-width:12px;"></div>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="a-btn" onClick="{{ handlePrint }}" style="background:white; border:1px solid #e2e8f0; color:#374151; padding:8px 14px; border-radius:8px; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:6px;" style-hover="background:#f8fafc;">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                       Print Record
                     </button>
-                    <button onClick="{{ profileOnShare }}" style="background:white; border:1px solid #e2e8f0; color:#374151; padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:6px;" style-hover="background:#f0f7ff; border-color:#1e3a8a; color:#1e3a8a;">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-                      Share Public Link
-                    </button>
                     <sc-if value="{{ isAdmin }}">
-                      <button onClick="{{ profileOnEdit }}" style="background:#1e3a8a; color:white; border:none; padding:8px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#162f72;">Edit Profile</button>
-                      <button onClick="{{ profileOnDelete }}" style="background:#fee2e2; color:#dc2626; border:none; padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#fecaca;">Delete</button>
+                      <button class="a-btn-primary" onClick="{{ profileOnEdit }}" style="background:#1e3a8a; color:white; border:none; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#162f72;">Edit Profile</button>
+                      <button class="a-btn-danger" onClick="{{ profileOnDelete }}" style="background:#fee2e2; color:#dc2626; border:none; padding:8px 12px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:#fecaca;">Delete</button>
                     </sc-if>
                   </div>
                 </div>
