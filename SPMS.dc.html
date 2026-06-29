@@ -31,8 +31,21 @@
     }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @media (max-width: 640px) {
+      /* Horizontal scroll on table cards */
       .t-scroll { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+      /* Min widths so grid columns never collapse below readable size */
+      .t-row-6 { min-width: 700px; }
+      .t-row-4 { min-width: 480px; }
+      /* Public portal hero */
       .pub-title { font-size: 24px !important; line-height: 1.3 !important; }
+      /* Mobile top bar: two rows */
+      .mob-topbar { flex-wrap: wrap !important; height: auto !important; padding: 10px 16px 0 !important; row-gap: 0 !important; column-gap: 0 !important; }
+      .mob-topbar::after { content: ''; display: block; flex: 0 0 100%; order: 3; height: 8px; }
+      .mob-logo  { order: 1 !important; flex-shrink: 0; }
+      .mob-title { display: none !important; }
+      .mob-initials { order: 2 !important; margin-left: auto !important; flex-shrink: 0; }
+      .mob-hamburger { order: 4 !important; margin-bottom: 10px !important; }
+      .mob-addstaff  { order: 5 !important; margin-left: 10px !important; margin-bottom: 10px !important; font-size: 11px !important; padding: 7px 11px !important; }
     }
     @media print {
       #spms-sidebar, #spms-topbar, .no-print { display: none !important; }
@@ -279,9 +292,9 @@
     <div style="display:flex; flex-direction:column; height:100vh; overflow:hidden; position:relative;">
 
       <!-- ── PERSISTENT TOP BAR (hamburger always visible) ── -->
-      <div style="height:52px; background:white; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; padding:0 16px; gap:12px; flex-shrink:0; z-index:60; position:relative;">
-        <!-- Hamburger / X toggle — always visible -->
-        <button onClick="{{ toggleSidebar }}" style="width:36px; height:36px; background:#f1f5f9; border:none; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#475569;" style-hover="background:#e2e8f0;" title="Toggle menu">
+      <div class="mob-topbar" style="height:52px; background:white; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; padding:0 16px; gap:12px; flex-shrink:0; z-index:60; position:relative;">
+        <!-- Hamburger / X toggle (mob: row 2 left) -->
+        <button class="mob-hamburger" onClick="{{ toggleSidebar }}" style="width:36px; height:36px; background:#f1f5f9; border:none; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#475569;" style-hover="background:#e2e8f0;" title="Toggle menu">
           <sc-if value="{{ showSidebarText }}" hint-placeholder-val="{{ false }}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </sc-if>
@@ -289,14 +302,16 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </sc-if>
         </button>
-        <img src="uploads/Navy-logo.png" style="width:28px; height:auto; object-fit:contain; flex-shrink:0;" alt="NNPMS" />
-        <div style="font-size:14px; font-weight:700; color:#0f172a; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ pageTitle }}</div>
-        <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
-          <sc-if value="{{ isAdmin }}">
-            <button onClick="{{ navToAddStaff }}" style="background:#1e3a8a; color:white; border:none; padding:7px 13px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap;" style-hover="background:#162f72;">+ Add Staff</button>
-          </sc-if>
-          <div style="width:32px; height:32px; border-radius:50%; background:#0f172a; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white; flex-shrink:0;" title="{{ currentUserName }}">{{ currentUserInitials }}</div>
-        </div>
+        <!-- Logo (mob: row 1 left) -->
+        <img class="mob-logo" src="uploads/Navy-logo.png" style="width:28px; height:auto; object-fit:contain; flex-shrink:0;" alt="NNPMS" />
+        <!-- Page title (mob: hidden) -->
+        <div class="mob-title" style="font-size:14px; font-weight:700; color:#0f172a; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ pageTitle }}</div>
+        <!-- Initials (mob: row 1 right) -->
+        <div class="mob-initials" style="width:32px; height:32px; border-radius:50%; background:#0f172a; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white; flex-shrink:0;" title="{{ currentUserName }}">{{ currentUserInitials }}</div>
+        <!-- Add Staff (mob: row 2, next to hamburger) -->
+        <sc-if value="{{ isAdmin }}">
+          <button class="mob-addstaff" onClick="{{ navToAddStaff }}" style="background:#1e3a8a; color:white; border:none; padding:7px 13px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap;" style-hover="background:#162f72;">+ Add Staff</button>
+        </sc-if>
       </div>
 
       <!-- ── BODY ROW: sidebar + main ── -->
@@ -449,14 +464,14 @@
                   </div>
                   <button onClick="{{ navToDirectory }}" style="background:none; border:none; color:#1e3a8a; font-size:12px; cursor:pointer; font-weight:500;" style-hover="color:#162f72;">View All →</button>
                 </div>
-                <div style="display:grid; grid-template-columns:2fr 1fr 1.5fr 80px; padding:9px 20px; background:#f8fafc; border-bottom:1px solid #f1f5f9;">
+                <div class="t-row-4" style="display:grid; grid-template-columns:2fr 1fr 1.5fr 80px; padding:9px 20px; background:#f8fafc; border-bottom:1px solid #f1f5f9;">
                   <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Name</div>
                   <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Rank</div>
                   <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Unit</div>
                   <div style="font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Status</div>
                 </div>
                 <sc-for list="{{ recentStaff }}" as="staff" hint-placeholder-count="5">
-                  <div onClick="{{ staff.onSelect }}" style="display:grid; grid-template-columns:2fr 1fr 1.5fr 80px; padding:12px 20px; border-bottom:1px solid #f8fafc; cursor:pointer; align-items:center;" style-hover="background:#f8fafc;">
+                  <div onClick="{{ staff.onSelect }}" class="t-row-4" style="display:grid; grid-template-columns:2fr 1fr 1.5fr 80px; padding:12px 20px; border-bottom:1px solid #f8fafc; cursor:pointer; align-items:center;" style-hover="background:#f8fafc;">
                     <div style="display:flex; align-items:center; gap:11px;">
                       <div style="width:34px; height:34px; border-radius:50%; background:{{ staff.avatarColor }}; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:white; flex-shrink:0;">{{ staff.initials }}</div>
                       <div>
@@ -550,7 +565,7 @@
                 </div>
 
                 <!-- Table header -->
-                <div style="display:grid; grid-template-columns:2.5fr 1.2fr 1fr 1.5fr 110px 90px; padding:9px 20px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <div class="t-row-6" style="display:grid; grid-template-columns:2.5fr 1.2fr 1fr 1.5fr 110px 90px; padding:9px 20px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
                   <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Full Name</div>
                   <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Service No</div>
                   <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Rank</div>
@@ -568,7 +583,7 @@
                 </sc-if>
 
                 <sc-for list="{{ staffWithDisplay }}" as="staff" hint-placeholder-count="8">
-                  <div style="display:grid; grid-template-columns:2.5fr 1.2fr 1fr 1.5fr 110px 90px; padding:14px 20px; border-bottom:1px solid #f8fafc; align-items:center;" style-hover="background:#f8fafc;">
+                  <div class="t-row-6" style="display:grid; grid-template-columns:2.5fr 1.2fr 1fr 1.5fr 110px 90px; padding:14px 20px; border-bottom:1px solid #f8fafc; align-items:center;" style-hover="background:#f8fafc;">
                     <div style="display:flex; align-items:center; gap:12px; cursor:pointer;" onClick="{{ staff.onSelect }}">
                       <div style="width:40px; height:40px; border-radius:50%; background:{{ staff.avatarColor }}; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:white; flex-shrink:0;">{{ staff.initials }}</div>
                       <div>
@@ -736,14 +751,14 @@
                   <div style="margin:0 28px 24px;">
                     <div style="font-size:14px; font-weight:600; color:#0f172a; margin-bottom:12px;">Deployment History</div>
                     <div class="t-scroll" style="border:1px solid #e2e8f0; border-radius:8px; overflow:hidden;">
-                      <div style="display:grid; grid-template-columns:2fr 1.5fr 1fr 1fr; padding:9px 16px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                      <div class="t-row-4" style="display:grid; grid-template-columns:2fr 1.5fr 1fr 1fr; padding:9px 16px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
                         <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Appointment</div>
                         <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Unit</div>
                         <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Period</div>
                         <div style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.8px;">Dept.</div>
                       </div>
                       <sc-for list="{{ profileLast5 }}" as="dep" hint-placeholder-count="5">
-                        <div style="display:grid; grid-template-columns:2fr 1.5fr 1fr 1fr; padding:12px 16px; border-bottom:1px solid #f8fafc; align-items:center;" style-hover="background:#f8fafc;">
+                        <div class="t-row-4" style="display:grid; grid-template-columns:2fr 1.5fr 1fr 1fr; padding:12px 16px; border-bottom:1px solid #f8fafc; align-items:center;" style-hover="background:#f8fafc;">
                           <div style="font-size:13.5px; font-weight:500; color:#0f172a;">{{ dep.appointment }}</div>
                           <div style="font-size:13px; color:#475569;">{{ dep.unit }}</div>
                           <div style="font-size:12px; color:#64748b; font-family:'JetBrains Mono',monospace;">{{ dep.startDate }}–{{ dep.endLabel }}</div>
