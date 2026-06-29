@@ -2,7 +2,7 @@ const { supabase } = require('../lib/supabaseServer');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -17,6 +17,18 @@ module.exports = async (req, res) => {
       .order('id');
     if (error) return res.status(500).json({ error: error.message });
     return res.status(200).json({ users: data || [] });
+  }
+
+  if (method === 'POST') {
+    const { name, username, password, role } = req.body || {};
+    if (!name || !username || !password) return res.status(400).json({ error: 'Name, username and password are required' });
+    const { data, error } = await supabase
+      .from('users')
+      .insert([{ name: name.trim(), username: username.trim(), password: password.trim(), role: role || 'viewer' }])
+      .select('id, name, username, role')
+      .single();
+    if (error) return res.status(500).json({ error: error.message });
+    return res.status(201).json({ user: data });
   }
 
   if (method === 'PUT') {

@@ -967,11 +967,15 @@
           <!-- ═══ USER MANAGEMENT ═══ -->
           <sc-if value="{{ isUserMgmt }}">
             <div style="animation:slideUp 0.3s ease;">
-              <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:22px;">
+              <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:12px;">
                 <div>
                   <div style="font-size:28px; font-weight:700; color:#0f172a; letter-spacing:-0.01em;">User Management</div>
                   <div style="font-size:14px; color:#64748b; margin-top:4px;">Manage system access and user roles.</div>
                 </div>
+                <button onClick="{{ openAddUser }}" style="background:#1e3a8a; color:white; border:none; padding:9px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:7px; white-space:nowrap; flex-shrink:0;" style-hover="background:#162f72;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add User / Admin
+                </button>
               </div>
               <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; overflow-x:auto; -webkit-overflow-scrolling:touch;">
                 <div class="t-row-5" style="display:grid; grid-template-columns:2fr 1fr 1fr 110px 140px; padding:10px 22px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
@@ -1045,6 +1049,48 @@
         </main>
       </div>
     </div>
+    </div>
+  </sc-if>
+
+  <!-- ADD USER MODAL -->
+  <sc-if value="{{ showAddUserModal }}">
+    <div style="position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; padding:24px; animation:fadeIn 0.2s ease;">
+      <div style="background:white; border-radius:12px; padding:28px 32px; max-width:440px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.2); border:1px solid #e2e8f0;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+          <div style="font-size:17px; font-weight:700; color:#0f172a;">Add User / Admin</div>
+          <button onClick="{{ closeAddUserModal }}" style="width:30px; height:30px; background:#f1f5f9; border:none; border-radius:7px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#64748b;" style-hover="background:#e2e8f0;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <sc-if value="{{ addUserError }}">
+          <div style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:10px 14px; border-radius:7px; font-size:13px; margin-bottom:14px;">{{ addUserError }}</div>
+        </sc-if>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Full Name</label>
+            <input value="{{ addUserFormName }}" data-field="name" onInput="{{ handleAddUserInput }}" type="text" placeholder="Full name" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none; box-sizing:border-box;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Username</label>
+            <input value="{{ addUserFormUsername }}" data-field="username" onInput="{{ handleAddUserInput }}" type="text" placeholder="e.g. jdoe" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none; box-sizing:border-box; font-family:'JetBrains Mono',monospace;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Password</label>
+            <input data-field="password" onInput="{{ handleAddUserInput }}" type="password" placeholder="••••••••" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; outline:none; box-sizing:border-box;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; font-weight:700; color:#374151; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Role</label>
+            <select value="{{ addUserFormRole }}" data-field="role" onChange="{{ handleAddUserInput }}" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; color:#0f172a; background:#fafafa; cursor:pointer; outline:none;">
+              <option value="viewer">Viewer (Search &amp; View only)</option>
+              <option value="admin">Administrator (Full Access)</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button onClick="{{ handleSaveNewUser }}" style="flex:1; background:#1e3a8a; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600;" style-hover="background:#162f72;">Create User</button>
+          <button onClick="{{ closeAddUserModal }}" style="flex:1; background:#f1f5f9; color:#374151; border:1px solid #e2e8f0; padding:12px; border-radius:8px; cursor:pointer; font-size:14px;" style-hover="background:#e2e8f0;">Cancel</button>
+        </div>
+      </div>
     </div>
   </sc-if>
 
@@ -1255,6 +1301,7 @@ class Component extends DCLogic {
     formData: { name:'', rank:'', serviceNumber:'', course:'', batch:'', coursesAttended:[], deployments:[], currentAppointment:'', currentUnit:'', currentDept:'', dateAssumed:'', photo:'' },
     formError: '', loginError: '', notification: null, deleteConfirmId: null,
     editUserModal: null, editUserError: '',
+    addUserModal: null, addUserError: '',
     sidebarCollapsed: false, isMobile: false, shareModal: null,
   };
 
@@ -1475,6 +1522,42 @@ class Component extends DCLogic {
     }
   }
 
+  openAddUser = () => {
+    this.setState({ addUserModal: { name: '', username: '', password: '', role: 'viewer' }, addUserError: '' });
+  }
+
+  handleAddUserInput = (e) => {
+    const f = e.target.dataset.field;
+    if (f) this.setState(s => ({ addUserModal: { ...s.addUserModal, [f]: e.target.value }, addUserError: '' }));
+  }
+
+  handleSaveNewUser = async () => {
+    const { addUserModal, users } = this.state;
+    if (!addUserModal) return;
+    if (!addUserModal.name.trim())     { this.setState({ addUserError: 'Full name is required.' }); return; }
+    if (!addUserModal.username.trim()) { this.setState({ addUserError: 'Username is required.' }); return; }
+    if (!addUserModal.password.trim()) { this.setState({ addUserError: 'Password is required.' }); return; }
+    if (users.some(u => u.username === addUserModal.username.trim())) {
+      this.setState({ addUserError: 'Username already taken.' }); return;
+    }
+    try {
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: addUserModal.name.trim(), username: addUserModal.username.trim(), password: addUserModal.password.trim(), role: addUserModal.role })
+      });
+      const json = await res.json();
+      if (res.ok) {
+        this.setState(s => ({ users: [...s.users, json.user], addUserModal: null, addUserError: '' }));
+        this.showNotification('success', 'User created successfully.');
+      } else {
+        this.setState({ addUserError: (json && json.error) || 'Failed to create user.' });
+      }
+    } catch (err) {
+      this.setState({ addUserError: 'Connection error. Please try again.' });
+    }
+  }
+
   openEditUser = (user) => {
     this.setState({ editUserModal: { id: user.id, name: user.name, username: user.username, role: user.role, password: '' }, editUserError: '' });
   }
@@ -1665,6 +1748,16 @@ class Component extends DCLogic {
       sidebarPosition: this.state.isMobile ? 'absolute' : 'relative',
       showMobileOverlay: this.state.isMobile && !this.state.sidebarCollapsed,
       showSidebarText: !this.state.sidebarCollapsed,
+      // Add user modal
+      showAddUserModal: !!(this.state.addUserModal),
+      addUserFormName: this.state.addUserModal ? this.state.addUserModal.name : '',
+      addUserFormUsername: this.state.addUserModal ? this.state.addUserModal.username : '',
+      addUserFormRole: this.state.addUserModal ? this.state.addUserModal.role : 'viewer',
+      addUserError: this.state.addUserError,
+      openAddUser: this.openAddUser,
+      closeAddUserModal: () => this.setState({ addUserModal: null, addUserError: '' }),
+      handleAddUserInput: this.handleAddUserInput,
+      handleSaveNewUser: this.handleSaveNewUser,
       // Edit user modal
       showEditUserModal: !!(this.state.editUserModal),
       editUserFormName: this.state.editUserModal ? this.state.editUserModal.name : '',
