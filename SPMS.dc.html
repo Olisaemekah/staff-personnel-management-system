@@ -1644,6 +1644,7 @@ class Component extends DCLogic {
     this.setState({ isSaving: true, formError: '' });
     const payload = {
       name: formData.name.trim(), rank: formData.rank, serviceNumber: formData.serviceNumber.trim(),
+      email: formData.email ? formData.email.trim() : '',
       course: formData.course.trim(), batch: formData.batch.trim(),
       yearJoined: new Date().getFullYear(), status: 'active', photo: formData.photo || '',
       currentDeployment: { appointment: formData.currentAppointment.trim(), unit: formData.currentUnit.trim(), department: formData.currentDept.trim(), dateAssumed: formData.dateAssumed },
