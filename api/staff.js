@@ -14,6 +14,7 @@ function fromDb(row) {
     currentDeployment: row.current_deployment || null,
     coursesAttended: (row.courses_attended || []).map((c, i) => ({ id: c.id || (i + 1), ...c })),
     deployments: (row.deployments || []).map((d, i) => ({ id: d.id || (i + 1), ...d })),
+    email: row.email || '',
     createdAt: row.created_at ? row.created_at.split('T')[0] : new Date().toISOString().split('T')[0]
   };
 }
@@ -30,7 +31,8 @@ function toDb(staff) {
     photo_url: staff.photo || staff.photo_url || null,
     current_deployment: staff.currentDeployment || staff.current_deployment || null,
     courses_attended: staff.coursesAttended || staff.courses_attended || [],
-    deployments: staff.deployments || []
+    deployments: staff.deployments || [],
+    email: staff.email || null
   };
 }
 
