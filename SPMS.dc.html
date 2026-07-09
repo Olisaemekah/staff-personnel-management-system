@@ -1515,7 +1515,7 @@ class Component extends DCLogic {
     const s = this.state.staffList.find(x => x.id === id);
     if (!s) return;
     this.setState({ selectedStaffId: id, formMode: 'edit', formError: '', page: 'edit-staff',
-      formData: { name:s.name, rank:s.rank, serviceNumber:s.serviceNumber, course:s.course||'', batch:s.batch||'',
+      formData: { name:s.name, rank:s.rank, serviceNumber:s.serviceNumber, email:s.email||'', course:s.course||'', batch:s.batch||'',
         coursesAttended:(s.coursesAttended||[]).map(c=>({...c})), deployments:(s.deployments||[]).map(d=>({...d})),
         currentAppointment:s.currentDeployment?s.currentDeployment.appointment:'', currentUnit:s.currentDeployment?s.currentDeployment.unit:'',
         currentDept:s.currentDeployment?s.currentDeployment.department:'', dateAssumed:s.currentDeployment?s.currentDeployment.dateAssumed:'',
