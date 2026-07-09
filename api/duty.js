@@ -19,25 +19,31 @@ async function sendDutyEmail(to, name, rank, dutyType, dutyDate, shift, location
       to,
       subject: `Duty Assignment – ${dutyType} on ${dutyDate}`,
       html: `
-        <div style="font-family:Inter,sans-serif;max-width:540px;margin:0 auto;background:#f8fafc;padding:32px 20px;">
-          <div style="background:white;border-radius:12px;padding:32px;border:1px solid #e2e8f0;">
-            <div style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:4px;">Naval Outpost Idah</div>
-            <div style="font-size:12px;color:#94a3b8;margin-bottom:24px;">Personnel Management System</div>
-            <hr style="border:none;border-top:1px solid #e2e8f0;margin-bottom:24px;">
+        <div style="font-family:Inter,Arial,sans-serif;max-width:560px;margin:0 auto;background:#f0f4f8;padding:28px 16px;">
+          <!-- Header with logo -->
+          <div style="background:#0f172a;border-radius:12px 12px 0 0;padding:24px 32px;text-align:center;">
+            <img src="https://staff-personnel-management-system.vercel.app/uploads/Navy-logo.jpeg" alt="Naval Outpost Idah" style="width:72px;height:72px;object-fit:contain;border-radius:50%;border:3px solid rgba(255,255,255,0.2);margin-bottom:12px;" />
+            <div style="font-size:18px;font-weight:700;color:#ffffff;letter-spacing:0.3px;">Naval Outpost Idah</div>
+            <div style="font-size:11px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-top:3px;">Personnel Management System</div>
+          </div>
+          <!-- Body -->
+          <div style="background:white;padding:32px;border-radius:0 0 12px 12px;border:1px solid #e2e8f0;border-top:none;">
             <div style="font-size:15px;color:#374151;margin-bottom:16px;">Dear <strong>${rank} ${name}</strong>,</div>
-            <div style="font-size:14px;color:#374151;line-height:1.6;margin-bottom:20px;">
+            <div style="font-size:14px;color:#374151;line-height:1.7;margin-bottom:24px;">
               You have been assigned to the following duty. Please acknowledge receipt and report accordingly.
             </div>
-            <div style="background:#f1f5ff;border-left:4px solid #1e3a8a;border-radius:6px;padding:16px 20px;margin-bottom:20px;">
-              <div style="font-size:13px;color:#1e3a8a;font-weight:700;margin-bottom:8px;">DUTY DETAILS</div>
-              <div style="font-size:14px;color:#0f172a;"><strong>Type:</strong> ${dutyType}</div>
-              <div style="font-size:14px;color:#0f172a;margin-top:4px;"><strong>Date:</strong> ${dutyDate}${shiftText}</div>
-              ${location ? `<div style="font-size:14px;color:#0f172a;margin-top:4px;"><strong>Location:</strong> ${location}</div>` : ''}
-              ${notes ? `<div style="font-size:14px;color:#0f172a;margin-top:4px;"><strong>Notes:</strong> ${notes}</div>` : ''}
+            <div style="background:#f1f5ff;border-left:4px solid #1e3a8a;border-radius:6px;padding:18px 20px;margin-bottom:24px;">
+              <div style="font-size:11px;color:#1e3a8a;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Duty Details</div>
+              <table style="width:100%;border-collapse:collapse;font-size:14px;color:#0f172a;">
+                <tr><td style="padding:4px 0;color:#64748b;width:90px;">Type</td><td style="padding:4px 0;font-weight:600;">${dutyType}</td></tr>
+                <tr><td style="padding:4px 0;color:#64748b;">Date</td><td style="padding:4px 0;font-weight:600;">${dutyDate}${shiftText}</td></tr>
+                ${location ? `<tr><td style="padding:4px 0;color:#64748b;">Location</td><td style="padding:4px 0;font-weight:600;">${location}</td></tr>` : ''}
+                ${notes ? `<tr><td style="padding:4px 0;color:#64748b;vertical-align:top;">Notes</td><td style="padding:4px 0;">${notes}</td></tr>` : ''}
+              </table>
             </div>
-            <div style="font-size:13px;color:#64748b;">If you have any questions, contact your commanding officer.</div>
+            <div style="font-size:13px;color:#64748b;line-height:1.6;">If you have any questions regarding this assignment, please contact your commanding officer.</div>
             <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0 16px;">
-            <div style="font-size:12px;color:#94a3b8;">This is an automated message from NOP-IDAH PMS. Do not reply to this email.</div>
+            <div style="font-size:11px;color:#94a3b8;text-align:center;">This is an automated notification from NOP-IDAH PMS &mdash; do not reply to this email.</div>
           </div>
         </div>
       `,
