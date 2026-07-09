@@ -8,5 +8,11 @@
     { "src": "/api/(.*)", "dest": "/api/$1.js" },
     { "src": "^/$", "dest": "/SPMS.dc.html" },
     { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "crons": [
+    {
+      "path": "/api/duty-reminder",
+      "schedule": "0 5 * * *"
+    }
   ]
 }
