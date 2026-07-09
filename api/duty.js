@@ -13,34 +13,39 @@ async function sendDutyEmail(to, name, rank, dutyType, dutyDate, shift, location
     auth: { user: gmailUser, pass: gmailPass },
   });
 
-  await transporter.sendMail({
-    from: `"NOI PMS" <${gmailUser}>`,
-    to,
-    subject: `Duty Assignment – ${dutyType} on ${dutyDate}`,
-    html: `
-      <div style="font-family:Inter,sans-serif;max-width:540px;margin:0 auto;background:#f8fafc;padding:32px 20px;">
-        <div style="background:white;border-radius:12px;padding:32px;border:1px solid #e2e8f0;">
-          <div style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:4px;">Naval Outpost Idah</div>
-          <div style="font-size:12px;color:#94a3b8;margin-bottom:24px;">Personnel Management System</div>
-          <hr style="border:none;border-top:1px solid #e2e8f0;margin-bottom:24px;">
-          <div style="font-size:15px;color:#374151;margin-bottom:16px;">Dear <strong>${rank} ${name}</strong>,</div>
-          <div style="font-size:14px;color:#374151;line-height:1.6;margin-bottom:20px;">
-            You have been assigned to the following duty. Please acknowledge receipt and report accordingly.
+  try {
+    await transporter.sendMail({
+      from: `"NOP-IDAH PMS" <${gmailUser}>`,
+      to,
+      subject: `Duty Assignment – ${dutyType} on ${dutyDate}`,
+      html: `
+        <div style="font-family:Inter,sans-serif;max-width:540px;margin:0 auto;background:#f8fafc;padding:32px 20px;">
+          <div style="background:white;border-radius:12px;padding:32px;border:1px solid #e2e8f0;">
+            <div style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:4px;">Naval Outpost Idah</div>
+            <div style="font-size:12px;color:#94a3b8;margin-bottom:24px;">Personnel Management System</div>
+            <hr style="border:none;border-top:1px solid #e2e8f0;margin-bottom:24px;">
+            <div style="font-size:15px;color:#374151;margin-bottom:16px;">Dear <strong>${rank} ${name}</strong>,</div>
+            <div style="font-size:14px;color:#374151;line-height:1.6;margin-bottom:20px;">
+              You have been assigned to the following duty. Please acknowledge receipt and report accordingly.
+            </div>
+            <div style="background:#f1f5ff;border-left:4px solid #1e3a8a;border-radius:6px;padding:16px 20px;margin-bottom:20px;">
+              <div style="font-size:13px;color:#1e3a8a;font-weight:700;margin-bottom:8px;">DUTY DETAILS</div>
+              <div style="font-size:14px;color:#0f172a;"><strong>Type:</strong> ${dutyType}</div>
+              <div style="font-size:14px;color:#0f172a;margin-top:4px;"><strong>Date:</strong> ${dutyDate}${shiftText}</div>
+              ${location ? `<div style="font-size:14px;color:#0f172a;margin-top:4px;"><strong>Location:</strong> ${location}</div>` : ''}
+              ${notes ? `<div style="font-size:14px;color:#0f172a;margin-top:4px;"><strong>Notes:</strong> ${notes}</div>` : ''}
+            </div>
+            <div style="font-size:13px;color:#64748b;">If you have any questions, contact your commanding officer.</div>
+            <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0 16px;">
+            <div style="font-size:12px;color:#94a3b8;">This is an automated message from NOP-IDAH PMS. Do not reply to this email.</div>
           </div>
-          <div style="background:#f1f5ff;border-left:4px solid #1e3a8a;border-radius:6px;padding:16px 20px;margin-bottom:20px;">
-            <div style="font-size:13px;color:#1e3a8a;font-weight:700;margin-bottom:8px;">DUTY DETAILS</div>
-            <div style="font-size:14px;color:#0f172a;"><strong>Type:</strong> ${dutyType}</div>
-            <div style="font-size:14px;color:#0f172a;margin-top:4px;"><strong>Date:</strong> ${dutyDate}${shiftText}</div>
-            ${location ? `<div style="font-size:14px;color:#0f172a;margin-top:4px;"><strong>Location:</strong> ${location}</div>` : ''}
-            ${notes ? `<div style="font-size:14px;color:#0f172a;margin-top:4px;"><strong>Notes:</strong> ${notes}</div>` : ''}
-          </div>
-          <div style="font-size:13px;color:#64748b;">If you have any questions, contact your commanding officer.</div>
-          <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0 16px;">
-          <div style="font-size:12px;color:#94a3b8;">This is an automated message from NOI PMS. Do not reply to this email.</div>
         </div>
-      </div>
-    `,
-  }).catch(() => {});
+      `,
+    });
+    console.log('Duty email sent to', to);
+  } catch (err) {
+    console.error('Failed to send duty email:', err.message);
+  }
 }
 
 module.exports = async (req, res) => {
@@ -76,12 +81,15 @@ module.exports = async (req, res) => {
 
     if (error) return res.status(500).json({ error: error.message });
 
+    let emailStatus = 'no_email';
     if (data.staff && data.staff.email) {
       await sendDutyEmail(data.staff.email, data.staff.name, data.staff.rank || '', dutyType, dutyDate, shift, location, notes);
       await supabase.from('duty_assignments').update({ notified: true }).eq('id', data.id);
+      emailStatus = 'sent';
     }
 
-    return res.status(201).json({ assignment: data });
+    console.log('Duty assigned. Staff email:', data.staff?.email || 'none', '| Status:', emailStatus);
+    return res.status(201).json({ assignment: data, emailStatus });
   }
 
   if (method === 'DELETE') {
